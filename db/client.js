@@ -1,5 +1,7 @@
 const { Pool } = require('pg');
 
+//TEST
+
 const connectionString = process.env.DATABASE_URL || 'https://localhost:5432/fitness-dev';
 
 const client = new Pool({
