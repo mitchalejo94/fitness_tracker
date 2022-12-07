@@ -22,6 +22,7 @@ async function dropTables() {
     DROP TABLE IF EXISTS users;
     `);
   } catch (error) {
+    console.log('there was an error dropping tables: ', error);
     throw error;
   }
 }
@@ -45,7 +46,7 @@ async function createTables() {
 
       CREATE TABLE routines(
         id SERIAL PRIMARY KEY,
-        "creatorId" INTEGER REFERNCES users(id),
+        "creatorId" INTEGER REFERENCES users(id),
         "isPublic" BOOLEAN DEFAULT false,
         name VARCHAR(255) UNIQUE NOT NULL,
         goal TEXT NOT NULL
@@ -54,13 +55,14 @@ async function createTables() {
       CREATE TABLE routine_activities(
         id SERIAL PRIMARY KEY,
         "routineId" INTEGER REFERENCES routines(id),
-        "activitieyId" INTEGER REFERENCES activities(id),
+        "activityId" INTEGER REFERENCES activities(id),
         duration INTEGER,
         count INTEGER,
         UNIQUE ("routineId", "activityId")
       );
     `);
   } catch (error) {
+    console.log('there was an error building tables: ', error);
     throw error;
   }
 }
