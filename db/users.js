@@ -18,8 +18,7 @@ async function createUser({ username, password }) {
     console.log('there was an error creating a new user in users.js: ', error);
     throw (error);
   }
-
-}
+};
 
 async function getUser({ username, password }) {
   // getting 1 user from the database
@@ -40,7 +39,7 @@ async function getUser({ username, password }) {
     console.log('there was an error getting a user in users/getUser: ', error);
     throw (error);
   }
-}
+};
 
 async function getUserById(userId) {
   // getting a user by their username
@@ -56,10 +55,21 @@ async function getUserById(userId) {
     console.log('there was an error in getUserById: ', error);
     throw error;
   }
-}
+};
 
 async function getUserByUsername(userName) {
-
+  // getting a user by their username
+  try {
+    const {rows: [fetchUserByUsername]} = await client.query(`
+    SELECT * FROM users
+    WHERE username=$1;
+    `, [userName]);
+    console.log('we have gotten a user by username: ', fetchUserByUsername);
+    return fetchUserByUsername;
+  } catch (error) {
+    console.log('there was an error in getUserByUsername: ', error);
+    throw (error);
+  }
 }
 
 module.exports = {
