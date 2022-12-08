@@ -59,12 +59,49 @@ async function getActivityByName(name) {
 async function attachActivitiesToRoutines(routines) {}
 
 // return the new activity
-async function createActivity({ name, description }) {}
+async function createActivity({ name, description }) {
+  try {
+    const {
+      rows: [activity],
+    } = await client.query(
+      `
+      INSERT INTO activities (name, description)
+      VALUES ($1, $2)
+      RETURNING *;
+    `,
+      [name, description]
+    );
+
+    return activity;
+  } catch (error) {
+    console.log("There was an error creating an activity", error);
+    throw error;
+  }
+}
 
 // don't try to update the id
 // do update the name and description
 // return the updated activity
-async function updateActivity({ id, ...fields }) {}
+async function updateActivity({ id, name, description }) {
+  try {
+    const {
+      rows: [activity],
+    } = await client.query(
+      `
+      UPDATE activities
+      SET name =$1, description =$2
+      WHERE id = $3
+      RETURNING *;
+    `,
+      [name, description, id]
+    );
+
+    return activity;
+  } catch (error) {
+    console.log("There was an error updating the activity:", error);
+    throw error;
+  }
+}
 
 module.exports = {
   getAllActivities,
