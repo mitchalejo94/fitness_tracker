@@ -56,10 +56,12 @@ async function getActivityByName(name) {
 }
 
 // select and return an array of all activities
+
+//attachActivitiesToRoutines is an incomplete function
 async function attachActivitiesToRoutines(routines) {
   try {
     const {
-      rows: [activity],
+      rows: [activities],
     } = await client.query(`
       SELECT *
       FROM activities
@@ -98,6 +100,8 @@ async function createActivity({ name, description }) {
 // don't try to update the id
 // do update the name and description
 // return the updated activity
+
+//updateActivity is not passing tests
 async function updateActivity({ id, name, description }) {
   try {
     const {
