@@ -56,7 +56,23 @@ async function getActivityByName(name) {
 }
 
 // select and return an array of all activities
-async function attachActivitiesToRoutines(routines) {}
+async function attachActivitiesToRoutines(routines) {
+  try {
+    const {
+      rows: [activity],
+    } = await client.query(`
+      SELECT *
+      FROM activities
+      JOIN
+      WHERE 
+    `);
+
+    //add return
+  } catch (error) {
+    console.log("There was an error attaching activities to routines", error);
+    throw error;
+  }
+}
 
 // return the new activity
 async function createActivity({ name, description }) {
