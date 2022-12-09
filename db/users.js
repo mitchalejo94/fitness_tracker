@@ -1,24 +1,37 @@
 const client = require("./client");
 
+// require our hashing function
+const bcrypt = require('bcrypt')
+
+// create our hash function
+const SALT_COUNT = 10;
+
 // database functions
 
 // user functions
 async function createUser({ username, password }) {
   // putting a new user into the database
+
+  // hashed password
+  const hashedPass = await bcrypt.hash(password, SALT_COUNT);
+  // console.log('HASHING NOW: ', hashedPass);
+
+  // console.log(typeof username);
+  // console.log(typeof hashedPass);
   try {
     const {rows: newUser} = await client.query(`
     INSERT INTO users (username, password)
     VALUES ($1, $2)
     RETURNING *
     ;
-    `, [username, password]);
-    // console.log('new user here', newUser.rows)
+    `, [username, hashedPass]);
+    console.log('new user here', newUser)
     return newUser;
   } catch (error) {
     console.log('there was an error creating a new user in users.js: ', error);
     throw (error);
   }
-};
+}
 
 async function getUser({ username, password }) {
   // getting 1 user from the database
