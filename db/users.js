@@ -11,6 +11,9 @@ const SALT_COUNT = 10;
 // user functions
 async function createUser({ username, password }) {
   // putting a new user into the database
+  if (!username || !password) {
+    throw new ("You must include both a username and a password");
+  }
 
   // hashed password
   const hashedPass = await bcrypt.hash(password, SALT_COUNT);
@@ -19,13 +22,14 @@ async function createUser({ username, password }) {
   // console.log(typeof username);
   // console.log(typeof hashedPass);
   try {
-    const {rows: newUser} = await client.query(`
+    const {rows: [newUser]} = await client.query(`
     INSERT INTO users (username, password)
     VALUES ($1, $2)
     RETURNING *
     ;
     `, [username, hashedPass]);
-    console.log('new user here', newUser)
+    // console.log('new user here', newUser)
+    delete newUser.password;
     return newUser;
   } catch (error) {
     console.log('there was an error creating a new user in users.js: ', error);
@@ -33,8 +37,8 @@ async function createUser({ username, password }) {
   }
 }
 
+// getting 1 user from the database
 async function getUser({ username, password }) {
-  // getting 1 user from the database
   /*
 
     WE MAY HAVE TO CHANGE THIS TO INCLUDE THE PASSWORD FIELD
@@ -47,7 +51,17 @@ async function getUser({ username, password }) {
     ;
     `, [username]);
     // console.log('have fetched a user: ', fetchUser);
-    return fetchUser;
+    
+
+    if (!fetchUser) {
+      throw new ("Password or username did not match");
+    } else {
+      const passwordcheck = await bcrypt.compare(password, fetchUser.password);
+      if (passwordcheck === true) {
+        delete fetchUser.password;
+        return fetchUser;
+      }
+    }
   } catch (error) {
     console.log('there was an error getting a user in users/getUser: ', error);
     throw (error);
@@ -62,7 +76,8 @@ async function getUserById(userId) {
     WHERE id=$1
     ;
     `, [userId]);
-    console.log('we have gotten a user by their id: ', getUserById);
+    // console.log('we have gotten a user by their id: ', getUserById);
+    delete getUserById.password;
     return getUserById;
   } catch (error) {
     console.log('there was an error in getUserById: ', error);
