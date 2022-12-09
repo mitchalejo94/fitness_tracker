@@ -1,4 +1,8 @@
 const client = require("./client");
+const { createUser,
+  getUser,
+  getUserById,
+  getUserByUsername,} = require("./users.js")
 
 //SMALL CHANGE
 
@@ -22,7 +26,22 @@ async function getRoutineById(id) {
   }
 }
 
-async function getRoutinesWithoutActivities() {}
+async function getRoutinesWithoutActivities() {
+  try {
+    const { rows } = await client.query(`
+    SELECT * 
+    FROM routines
+    `);
+
+    return rows;
+  } catch (error) {
+    console.log(
+      "There was an error getting routines without activities",
+      error
+    );
+    throw error;
+  }
+}
 
 async function getAllRoutines() {
   try {
@@ -30,7 +49,7 @@ async function getAllRoutines() {
     SELECT *
     FROM routines;
     `);
-
+console.log(rows, "ROWS CONSOLE LOG")
     return rows;
   } catch (error) {
     console.log("There was an error getting all routines:", error);
@@ -46,17 +65,18 @@ async function getAllPublicRoutines() {}
 
 async function getPublicRoutinesByActivity({ id }) {}
 
-async function createRoutine({ creatorId, isPublic, name, goal }) {
+async function createRoutine({ creatorId, name, goal }) {
+  console.log(name,"name of routine")
   try {
     const {
-      rows: [routine],
+      rows: [routine]
     } = await client.query(
       `
-      INSERT INTO routines (creatorId, isPublic, name, goal)
-      VALUES ($1, $2, $3, $4)
+      INSERT INTO routines ("creatorId", name, goal)
+      VALUES ($1, $2, $3)
       RETURNING *;
     `,
-      [creatorId, isPublic, name, goal]
+      [creatorId, name, goal]
     );
 
     return routine;
