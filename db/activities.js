@@ -108,17 +108,19 @@ async function updateActivity({ id, name, description }) {
       rows: [activity],
     } = await client.query(
       `
-        UPDATE activities
-        SET name =$2, description = $3
-        WHERE id = $1
-        RETURNING *;
+      UPDATE activities
+      SET
+      name = COALESCE($2, name),
+      description = COALESCE($3, description)
+      WHERE id=$1
+      RETURNING *;
     `,
       [id, name, description]
     );
 
     return activity;
   } catch (error) {
-    console.log("There was an error updating the activity:", error);
+    console.error("update activity error");
     throw error;
   }
 }
