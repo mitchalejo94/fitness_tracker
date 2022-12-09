@@ -60,19 +60,24 @@ async function getActivityByName(name) {
 
 //attachActivitiesToRoutines is an incomplete function
 async function attachActivitiesToRoutines(routines) {
-  try {
-    const {
-      rows: [allActivities],
-    } = await client.query(`
-      SELECT *
-      FROM activities
-    `);
-    console.log(allActivities, "here");
-    return allActivities;
-  } catch (error) {
-    console.log("There was an error attaching activities to routines", error);
-    throw error;
-  }
+  const getActivities = async (routineId) => {
+    try {
+      const { rows } = await client.query(
+        `
+        SELECT activities.*, routine_activities.count, routine_activities.duration, routine_activities.id "routineActivityId", routine_activities."routineId"
+        FROM activities
+        JOIN routine_activities ON activities.id=routine_activities."activityId"
+        WHERE routine_activities."routineId"=$1;
+      `,
+        [routineId]
+      );
+
+      return rows;
+    } catch (error) {
+      console.log("There was an error in attaching activities to routines");
+      throw error;
+    }
+  };
 }
 
 // return the new activity
