@@ -125,7 +125,22 @@ async function updateRoutine({ id, creatorId, isPublic, name, goal }) {
   }
 }
 
-async function destroyRoutine(id) {}
+async function destroyRoutine(id) {
+  try { 
+    const { 
+      rows: [routine]
+    } = await client.query(
+        `
+        DELETE FROM ROUTINES
+        WHERE id=$1
+        `,
+        [id]
+    );
+  } catch (error){
+    console.log("unable to delete routine", error)
+    throw error;
+  }
+}
 
 module.exports = {
   getRoutineById,
