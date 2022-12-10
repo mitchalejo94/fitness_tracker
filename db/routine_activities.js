@@ -5,9 +5,11 @@ const { getRoutineById } = require('./routines')
 async function getRoutineActivityById(id){
   try {
     const {rows: [routineActivity]} = await client.query(`
-    SELECT * FROM routine_activities
-    WHERE id=$1;
-    `, [id]);
+    SELECT routine_activities."activityId", activities.id
+    FROM routine_activities
+    JOIN activities ON routine_activities."activityId"=activities.id;
+    `);
+
     console.log('here we have a routine by Id: ', routineActivity);
     return routineActivity;
   } catch (error) {
@@ -40,6 +42,14 @@ async function addActivityToRoutine({
 async function getRoutineActivitiesByRoutine({id}) {
   try {
 
+// SELECT routine_activities."activityId", activities.id
+// FROM routine_activities
+// JOIN activities ON routine_activities."activityId"=activities.id;
+
+// SELECT routine_activities."routineId", routines.id
+// FROM routine_activities
+// JOIN routines ON routine_activities."routineId"=routines.id;
+
     // should return the routine activities for a routine
       // first we need to get the routine with given id
         // then with that id we can get the activites
@@ -47,11 +57,16 @@ async function getRoutineActivitiesByRoutine({id}) {
 
     console.log('ourRoutine here: ', ourRoutine);
 
-    
+    const {rows: routineArray} = await client.query(`
+    SELECT routine_activities."routineId", routines.id
+    FROM routine_activities
+    JOIN routines ON routine_activities."routineId"=routines.id;
+    ;
+    `);
 
-    console.log('is this an array? : ', routineActivites);
+    console.log('is this an array? : ', routineArray);
 
-    return routineActivites;
+    return routineArray;
 
   } catch (error) {
     console.log('there was an error in getRoutineActivitiesByRoutine: ', error);
