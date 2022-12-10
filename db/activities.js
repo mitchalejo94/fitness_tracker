@@ -1,5 +1,4 @@
 const client = require("./client");
-const { getUserById } = require("./users");
 
 // database functions
 async function getAllActivities() {
@@ -58,27 +57,26 @@ async function getActivityByName(name) {
 
 // select and return an array of all activities
 
-//attachActivitiesToRoutines is an incomplete function
-async function attachActivitiesToRoutines(routines) {
-  const getActivities = async (routineId) => {
-    try {
-      const { rows } = await client.query(
-        `
-        SELECT activities.*, routine_activities.count, routine_activities.duration, routine_activities.id "routineActivityId", routine_activities."routineId"
-        FROM activities
-        JOIN routine_activities ON activities.id=routine_activities."activityId"
-        WHERE routine_activities."routineId"=$1;
-      `,
-        [routineId]
-      );
-
-      return rows;
-    } catch (error) {
-      console.log("There was an error in attaching activities to routines");
-      throw error;
-    }
-  };
-}
+//may need to change this function
+// async function attachActivitiesToRoutines(routines) {
+//   try {
+//     const { rows: activities } = await client.query(`
+//         SELECT activities.*, routine_activities.*
+//         FROM activities
+//         JOIN routine_activities ON activities.id=routine_activities."activityId";
+//     `);
+//     routines.forEach((routine) => {
+//       const filteredActivities = activities.filter(
+//         (activity) => routine.id === activity.routineId
+//       );
+//       routine.activities = filteredActivities;
+//     });
+//     return routines;
+//   } catch (error) {
+//     console.error("attach activities to routines error", error);
+//     throw error;
+//   }
+// }
 
 // return the new activity
 async function createActivity({ name, description }) {
@@ -133,7 +131,7 @@ module.exports = {
   getAllActivities,
   getActivityById,
   getActivityByName,
-  attachActivitiesToRoutines,
+  // attachActivitiesToRoutines,
   createActivity,
   updateActivity,
 };
