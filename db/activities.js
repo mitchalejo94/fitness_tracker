@@ -1,5 +1,4 @@
 const client = require("./client");
-const { getUserById } = require("./users");
 
 // database functions
 async function getAllActivities() {
