@@ -57,24 +57,26 @@ async function getActivityByName(name) {
 
 // select and return an array of all activities
 
-//attachActivitiesToRoutines is an incomplete function
-async function attachActivitiesToRoutines(routines) {
-  try {
-    const {
-      rows: [activities],
-    } = await client.query(`
-      SELECT *
-      FROM activities
-      JOIN
-      WHERE 
-    `);
-
-    //add return
-  } catch (error) {
-    console.log("There was an error attaching activities to routines", error);
-    throw error;
-  }
-}
+//may need to change this function
+// async function attachActivitiesToRoutines(routines) {
+//   try {
+//     const { rows: activities } = await client.query(`
+//         SELECT activities.*, routine_activities.*
+//         FROM activities
+//         JOIN routine_activities ON activities.id=routine_activities."activityId";
+//     `);
+//     routines.forEach((routine) => {
+//       const filteredActivities = activities.filter(
+//         (activity) => routine.id === activity.routineId
+//       );
+//       routine.activities = filteredActivities;
+//     });
+//     return routines;
+//   } catch (error) {
+//     console.error("attach activities to routines error", error);
+//     throw error;
+//   }
+// }
 
 // return the new activity
 async function createActivity({ name, description }) {
@@ -107,17 +109,19 @@ async function updateActivity({ id, name, description }) {
       rows: [activity],
     } = await client.query(
       `
-        UPDATE activities
-        SET name =$2, description = $3
-        WHERE id = $1
-        RETURNING *;
+      UPDATE activities
+      SET
+      name = COALESCE($2, name),
+      description = COALESCE($3, description)
+      WHERE id=$1
+      RETURNING *;
     `,
       [id, name, description]
     );
 
     return activity;
   } catch (error) {
-    console.log("There was an error updating the activity:", error);
+    console.error("update activity error");
     throw error;
   }
 }
@@ -126,7 +130,7 @@ module.exports = {
   getAllActivities,
   getActivityById,
   getActivityByName,
-  attachActivitiesToRoutines,
+  // attachActivitiesToRoutines,
   createActivity,
   updateActivity,
 };
