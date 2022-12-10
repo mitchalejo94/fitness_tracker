@@ -1,5 +1,7 @@
 const client = require('./client')
 
+const { getRoutineById } = require('./routines')
+
 async function getRoutineActivityById(id){
   try {
     const {rows: [routineActivity]} = await client.query(`
@@ -36,6 +38,26 @@ async function addActivityToRoutine({
 }
 
 async function getRoutineActivitiesByRoutine({id}) {
+  try {
+
+    // should return the routine activities for a routine
+      // first we need to get the routine with given id
+        // then with that id we can get the activites
+    const ourRoutine = getRoutineById(id);
+
+    console.log('ourRoutine here: ', ourRoutine);
+
+    
+
+    console.log('is this an array? : ', routineActivites);
+
+    return routineActivites;
+
+  } catch (error) {
+    console.log('there was an error in getRoutineActivitiesByRoutine: ', error);
+    throw error;
+  }
+
 }
 
 async function updateRoutineActivity ({id, ...fields}) {
