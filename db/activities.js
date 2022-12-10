@@ -59,25 +59,25 @@ async function getActivityByName(name) {
 // select and return an array of all activities
 
 //may need to change this function
-async function attachActivitiesToRoutines(routines) {
-  try {
-    const { rows: activities } = await client.query(`
-        SELECT activities.*, routine_activities.duration, routine_activities.count, routine_activities.id AS "routineActivityId", routine_activities."routineId"
-        FROM activities
-        JOIN routine_activities ON activities.id=routine_activities."activityId"   
-    `);
-    routines.forEach((routine) => {
-      const filteredActivities = activities.filter(
-        (activity) => routine.id === activity.routineId
-      );
-      routine.activities = filteredActivities;
-    });
-    return routines;
-  } catch (error) {
-    console.error("attach activities to routines error", error);
-    throw error;
-  }
-}
+// async function attachActivitiesToRoutines(routines) {
+//   try {
+//     const { rows: activities } = await client.query(`
+//         SELECT activities.*, routine_activities.*
+//         FROM activities
+//         JOIN routine_activities ON activities.id=routine_activities."activityId";
+//     `);
+//     routines.forEach((routine) => {
+//       const filteredActivities = activities.filter(
+//         (activity) => routine.id === activity.routineId
+//       );
+//       routine.activities = filteredActivities;
+//     });
+//     return routines;
+//   } catch (error) {
+//     console.error("attach activities to routines error", error);
+//     throw error;
+//   }
+// }
 
 // return the new activity
 async function createActivity({ name, description }) {
@@ -132,7 +132,7 @@ module.exports = {
   getAllActivities,
   getActivityById,
   getActivityByName,
-  attachActivitiesToRoutines,
+  // attachActivitiesToRoutines,
   createActivity,
   updateActivity,
 };
