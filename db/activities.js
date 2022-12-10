@@ -89,7 +89,6 @@ async function createActivity({ name, description }) {
     `,
       [name, description]
     );
-
     return activity;
   } catch (error) {
     console.log("There was an error creating an activity", error);

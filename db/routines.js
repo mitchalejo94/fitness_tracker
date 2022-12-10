@@ -49,7 +49,7 @@ async function getAllRoutines() {
     SELECT *
     FROM routines;
     `);
-console.log(rows, "ROWS CONSOLE LOG")
+
     return rows;
   } catch (error) {
     console.log("There was an error getting all routines:", error);
@@ -61,30 +61,49 @@ async function getAllRoutinesByUser({ username }) {}
 
 async function getPublicRoutinesByUser({ username }) {}
 
-async function getAllPublicRoutines() {}
+async function getAllPublicRoutines(isPublic) {
+  
+  try {
+  const {
+    rows: [routine],
+  } = await client.query(
+    `
+    SELECT * 
+    FROM routines
+    WHERE "isPublic"=TRUE;
+    `,
+    [isPublic]
+  );
+
+  return routine;
+} catch (error) {
+  console.log("There was an error getting routine by Id", error);
+  throw error;
+}}
 
 async function getPublicRoutinesByActivity({ id }) {}
 
-async function createRoutine({ creatorId, name, goal }) {
-  console.log(name,"name of routine")
+ async function createRoutine({ creatorId, isPublic, name, goal }) {
   try {
     const {
       rows: [routine]
     } = await client.query(
       `
-      INSERT INTO routines ("creatorId", name, goal)
-      VALUES ($1, $2, $3)
+      INSERT INTO routines ("creatorId", "isPublic", name, goal)
+      VALUES ($1, $2, $3, $4)
       RETURNING *;
     `,
-      [creatorId, name, goal]
+      [creatorId, isPublic, name, goal]
     );
 
+   
     return routine;
   } catch (error) {
     console.log("There was an error creating a routine", error);
     throw error;
   }
 }
+
 
 async function updateRoutine({ id, creatorId, isPublic, name, goal }) {
   try {
@@ -99,7 +118,6 @@ async function updateRoutine({ id, creatorId, isPublic, name, goal }) {
     `,
       [id, creatorId, isPublic, name, goal]
     );
-
     return routine;
   } catch (error) {
     console.error("update activity error");
