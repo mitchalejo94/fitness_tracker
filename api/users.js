@@ -3,6 +3,7 @@ const router = express.Router();
 
 // create user function to add to db
 const { createUser, getUserByUsername } = require('../db/users');
+const { getAllRoutinesByUser } = require('../db/routines')
 
 // require for hasing and checking passwords
 const bcrypt = require('bcrypt');
@@ -24,7 +25,7 @@ router.post('/api/users/login', async (request, response, next) => {
         }
 
         // we still have to do something with the token below
-        // response.send()
+        // response.send(id, username, token)
 
     } catch (error) {
         console.log('there was an error in router.post/api/users/login: ', error);
@@ -59,6 +60,26 @@ router.post('/api/users/register', async (request, response, next) => {
 })
 
 // GET /api/users/me
+router.get('/api/users/me', async (request, response, next) => {
+    try {
+        // get the token from the header and check for a token
+        const { token } = request.headers;
+        if (!token) {
+            throw new "You must be logged in.";
+        }
+        const { username } = request.body; // ?????
+
+        // we probably want to send them all the routines and activities associated with this user
+        const routines = getAllRoutinesByUser(username);
+
+        // add more?
+        response.send(routines);
+
+    } catch (error) {
+        console.log('there was an error in router.get/api/users/me: ', error);
+        throw error;
+    }
+})
 
 // GET /api/users/:username/routines
 
