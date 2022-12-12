@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 // create user function to add to db
-const { createUser } = require('../db/users');
+const { createUser, getUserByUsername } = require('../db/users');
 
 // require for hasing and checking passwords
 const bcrypt = require('bcrypt');
@@ -13,8 +13,18 @@ const SALT_COUNT = 10;
 router.post('/api/users/login', async (request, response, next) => {
     try {
         // get the user information
-        const userInfo = request.body;
+        const { username, password } = request.body;
 
+        const ourUserFromDatabase = getUserByUsername(username);
+
+        // compare the typed password to the hashed password from the database
+        const hashedPass = await bcrypt.compare(password, SALT_COUNT);
+        if (hashedPass != ourUserFromDatabase.password) {
+            throw new "You typed the inncorrect password";
+        }
+
+        // we still have to do something with the token below
+        // response.send()
 
     } catch (error) {
         console.log('there was an error in router.post/api/users/login: ', error);
@@ -33,7 +43,7 @@ router.post('/api/users/register', async (request, response, next) => {
             throw new "Your password is too short";
         } 
         // hash the password
-        const hashedPassword = await bcrypt.hash(password, SALT_COUNT);
+        const hashedPassword = await bcrypt.compare(password, SALT_COUNT);
         
         const newUser = createUser(username, hashedPassword);
 
@@ -41,7 +51,7 @@ router.post('/api/users/register', async (request, response, next) => {
         still not sure how to check for duplicate usernames???
         */
 
-        return newUser;
+        response.send(newUser);
     } catch (error) {
         console.log('there was an error in router.post/api/users/register: ', error);
         throw error;
