@@ -82,5 +82,22 @@ router.get('/api/users/me', async (request, response, next) => {
 })
 
 // GET /api/users/:username/routines
+router.get('/api/users/:username/routines', async (request, response, next) => {
+    try {
+        const username = request.params;
+        const routines = getAllRoutinesByUser(username);
+
+        // this might check for public-ness?
+        routines.forEach((routine) => {
+            if (routines.isPublic === true) {
+                return routine;
+            }
+        })
+        response.send(routines);
+    } catch (error) {
+        console.log('there was an error in router.get/api/users/username/routines: ', error);
+        throw error;
+    }
+})
 
 module.exports = router;
