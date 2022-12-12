@@ -90,7 +90,7 @@ async function getUserByUsername(userName) {
     SELECT * FROM users
     WHERE username=$1;
     `, [userName]);
-    console.log('we have gotten a user by username: ', fetchUserByUsername);
+    // console.log('we have gotten a user by username: ', fetchUserByUsername);
     return fetchUserByUsername;
   } catch (error) {
     console.log('there was an error in getUserByUsername: ', error);
