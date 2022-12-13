@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const { requireUser } = require("./utils");
 const {
   getAllActivities,
   createActivity,
@@ -67,5 +68,27 @@ router.post("/", async (req, res, next) => {
 });
 
 // PATCH /api/activities/:activityId
+router.patch("/:activityId", requireUser, async (req, res, next) => {
+  try {
+    if (requireUser) {
+      const { name, description } = req.body;
+      const id = req.params.activityId;
+      const updatedActivity = await updateActivity({
+        id,
+        name,
+        description,
+      });
+
+      res.send(updatedActivity);
+    } else {
+      res.send({
+        name: "MissingUserError",
+        message: "You must be logged in to perform this action",
+      });
+    }
+  } catch (error) {
+    next(error);
+  }
+});
 
 module.exports = router;
