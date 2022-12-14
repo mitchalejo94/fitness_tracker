@@ -5,6 +5,7 @@ async function getRoutineActivityById(id) {
     // get a routine from the id
     // select all routine_activities where id = routineId
     // A small change test
+    console.log('id here? ', id)
     const {
       rows: [routineActivity],
     } = await client.query(
@@ -30,16 +31,16 @@ async function addActivityToRoutine({
   duration,
 }) {
   try {
-    const { rows: activity } = await client.query(
+    const { rows: [activity] } = await client.query(
       `
       INSERT INTO routine_activities ("routineId", "activityId", duration, count)
       VALUES ($1, $2, $3, $4)
       RETURNING *
       ;
       `,
-      [routineId, activityId, count, duration]
+      [routineId, activityId, duration, count]
     );
-    console.log("this is the activity we have added: ", activity);
+    // console.log("this is the activity we have added: ", activity);
     return activity;
   } catch (error) {
     console.log("there was an error in addActivityToRoutine: ", error);
@@ -72,7 +73,7 @@ async function updateRoutineActivity({ id, count, duration }) {
       rows: [routine_activity],
     } = await client.query(
       `
-      UPDATE "routine_activities"
+      UPDATE routine_activities
       SET 
       count = COALESCE($2, count),
       duration = COALESCE($3, duration)
