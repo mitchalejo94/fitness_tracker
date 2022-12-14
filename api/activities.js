@@ -1,6 +1,5 @@
 const express = require("express");
 const router = express.Router();
-const { requireUser } = require("./utils");
 const {
   getAllActivities,
   createActivity,
@@ -11,8 +10,9 @@ const {
 const { getPublicRoutinesByActivity } = require("../db/routines");
 
 // GET /api/activities/:activityId/routines
-router.get("/:activityId/routines", async (req, res, next) => {
+router.get("/api/activities/:activityId/routines", async (req, res, next) => {
   const { activityId } = req.params;
+  console.log(activityId, "THIS IS ACTIVITY ID LINE 16");
   try {
     const activity = await getActivityById(activityId);
     if (!activity) {
@@ -31,13 +31,14 @@ router.get("/:activityId/routines", async (req, res, next) => {
 });
 
 // GET /api/activities
-router.get("/", async (req, res, next) => {
+router.get("/activities", async (req, res, next) => {
   try {
     const allActivities = await getAllActivities();
-    res.send(allActivities);
-  } catch ({ name, message }) {
-    next({ name, message });
-  }
+    res.send({allActivities});
+   
+  } catch (error) {
+      next(error);
+    } 
 });
 
 // POST /api/activities
