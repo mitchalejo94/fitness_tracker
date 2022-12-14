@@ -1,8 +1,5 @@
 const client = require("./client");
 const {
-  createUser,
-  getUser,
-  getUserById,
   getUserByUsername,
 } = require("./users.js");
 
@@ -47,15 +44,27 @@ async function getRoutinesWithoutActivities() {
 
 async function getAllRoutines() {
   try {
-    const { rows } = await client.query(`
-    SELECT *
-    FROM routines;
-    `);
+    const { rows: routines } = await client.query(
+      `SELECT routines.*, users.username AS "creatorName" 
+      FROM routines 
+      INNER JOIN users ON routines."creatorId"=users.id;`
+    );
 
-    return rows;
+    const routinesWithActivities = await Promise.all(
+      routines.map(async (routine) => {
+        const { rows: activities } = await client.query(
+          `SELECT routine_activities.*, routine_activities.id as "routineActivityId", activities.* 
+          FROM routine_activities 
+          INNER JOIN activities ON routine_activities."activityId"=activities.id WHERE routine_activities."routineId"=${routine.id};`
+        );
+        return { ...routine, activities };
+      })
+    );
+
+    return routinesWithActivities;
   } catch (error) {
-    console.log("There was an error getting all routines:", error);
-    throw error();
+    console.log('There was an error getting all routines', error)
+    throw error;
   }
 }
 
@@ -118,22 +127,29 @@ async function getPublicRoutinesByUser({ username }) {
   }
 }
 
-async function getAllPublicRoutines(isPublic) {
+async function getAllPublicRoutines() {
   try {
-    const {
-      rows: [routine],
-    } = await client.query(
-      `
-    SELECT * 
-    FROM routines
-    WHERE "isPublic"=TRUE;
-    `,
-      [isPublic]
+    const { rows: routines } = await client.query(
+      `SELECT routines.*, users.username AS "creatorName" 
+      FROM routines 
+      INNER JOIN users ON routines."creatorId"=users.id 
+      WHERE "isPublic"=true;`
     );
 
-    return routine;
+    const routinesWithActivities = await Promise.all(
+      routines.map(async (routine) => {
+        const { rows: activities } = await client.query(
+          `SELECT routine_activities.*, routine_activities.id as "routineActivityId", activities.* 
+          FROM routine_activities 
+          INNER JOIN activities ON routine_activities."activityId"=activities.id WHERE routine_activities."routineId"=${routine.id};`
+        );
+        return { ...routine, activities };
+      })
+    );
+
+    return routinesWithActivities;
   } catch (error) {
-    console.log("There was an error getting routine by Id", error);
+    console.log("There was an error getting all public routines", error)
     throw error;
   }
 }
@@ -176,41 +192,41 @@ async function createRoutine({ creatorId, isPublic, name, goal }) {
   }
 }
 
-async function updateRoutine({ id, creatorId, isPublic, name, goal }) {
+async function updateRoutine({ id, isPublic, name, goal}) {
   try {
-    const {
-      rows: [routine],
-    } = await client.query(
+    const { rows: [routine] } = await client.query(
       `
-    UPDATE routines
-    name = COALESCE($2, name)
-    WHERE id=$1
-    RETURNING *;
+      UPDATE routines SET
+        "isPublic" = COALESCE($1, "isPublic"),
+        name = COALESCE($2, name),
+        goal = COALESCE($3, goal)
+      WHERE id = $4
+      RETURNING *;
     `,
-      [id, creatorId, isPublic, name, goal]
+      [isPublic, name, goal, id]
     );
     return routine;
   } catch (error) {
-    console.error("update activity error");
+    console.error('There was an error updating routine', error)
     throw error;
   }
 }
 
 async function destroyRoutine(id) {
   try {
-    const {
-      rows: [routine],
-    } = await client.query(
-      `
-        DELETE FROM ROUTINES
-        WHERE id=$1
-        `,
-      [id]
-    );
+    await client.query(`
+      DELETE FROM routine_activities
+      WHERE "routineId"=$1
+    `, [id])
+    const { rows: [routine] } = await client.query(`
+      DELETE FROM routines
+      WHERE routines.id=$1
+      RETURNING *
+   `, [id])
 
     return routine;
   } catch (error) {
-    console.log("unable to delete routine", error);
+    console.error('There was an error deleting routine', error)
     throw error;
   }
 }
