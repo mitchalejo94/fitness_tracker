@@ -69,9 +69,9 @@ router.post("/", async (req, res, next) => {
 });
 
 // PATCH /api/activities/:activityId
-router.patch("/:activityId", requireUser, async (req, res, next) => {
+router.patch("/:activityId", async (req, res, next) => {
   try {
-    if (requireUser) {
+    if () {
       const { name, description } = req.body;
       const id = req.params.activityId;
       const updatedActivity = await updateActivity({
