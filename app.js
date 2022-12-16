@@ -1,15 +1,26 @@
 require("dotenv").config()
 const express = require("express")
-const app = express.Router()
+const app = express()
 
 // Setup your Middleware and API Router here
+
+// this will allow us to use tokens in the future
+// const jwt = require('jsonwebtoken');
+// const { getUserById } = require('../db');
+// const { JWT_SECRET } = process.env;
 
 // this is the router that puts us inside the api folder
 const apiRouter = require('./api');
 app.use('/api', apiRouter);
 
-// this router gets us to the /db folder
 
+// error, req, res, next => error handling
+apiRouter.use('/', async (error, request, response, next) => {
+    response.send({
+        name: error.name,
+        message: error.message
+    }).status(404);
+});
 
 module.exports = app;
 

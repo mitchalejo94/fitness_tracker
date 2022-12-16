@@ -31,11 +31,14 @@ router.get("/api/activities/:activityId/routines", async (req, res, next) => {
 });
 
 // GET /api/activities
-router.get("/activities", async (req, res, next) => {
+
+
+
+router.get("/", async (req, res, next) => {
   try {
     const allActivities = await getAllActivities();
     res.send({allActivities});
-   
+    
   } catch (error) {
       next(error);
     } 
@@ -69,27 +72,27 @@ router.post("/", async (req, res, next) => {
 });
 
 // PATCH /api/activities/:activityId
-router.patch("/:activityId", async (req, res, next) => {
-  try {
-    if () {
-      const { name, description } = req.body;
-      const id = req.params.activityId;
-      const updatedActivity = await updateActivity({
-        id,
-        name,
-        description,
-      });
+// router.patch("/:activityId", async (req, res, next) => {
+//   try {
+//     if () {
+//       const { name, description } = req.body;
+//       const id = req.params.activityId;
+//       const updatedActivity = await updateActivity({
+//         id,
+//         name,
+//         description,
+//       });
 
-      res.send(updatedActivity);
-    } else {
-      res.send({
-        name: "MissingUserError",
-        message: "You must be logged in to perform this action",
-      });
-    }
-  } catch (error) {
-    next(error);
-  }
-});
+//       res.send(updatedActivity);
+//     } else {
+//       res.send({
+//         name: "MissingUserError",
+//         message: "You must be logged in to perform this action",
+//       });
+//     }
+//   } catch (error) {
+//     next(error);
+//   }
+// });
 
 module.exports = router;
