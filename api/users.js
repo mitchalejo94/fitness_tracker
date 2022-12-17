@@ -105,8 +105,9 @@ router.get('/me', async (request, response, next) => {
 router.get('/:username/routines', async (request, response, next) => {
     try {
         const username = request.params;
-        const routines = getAllRoutinesByUser(username);
-
+        console.log('username', username);
+        const routines = await getAllRoutinesByUser(username);
+        console.log('routines here: ', routines)
         // this might check for public-ness?
         routines.forEach((routine) => {
             if (routines.isPublic === true) {
