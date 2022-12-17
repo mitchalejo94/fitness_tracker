@@ -7,6 +7,7 @@ const {
     updateRoutineActivity,
     destroyRoutineActivity,
 } = require ("../db/routine_activities") 
+//TEST
 
 // PATCH /api/routine_activities/:routineActivityId
 
