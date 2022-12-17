@@ -1,16 +1,59 @@
 require("dotenv").config()
 const express = require("express")
 const app = express()
+const apiRouter = require('./api');
+
 
 // Setup your Middleware and API Router here
 
 // this will allow us to use tokens in the future
-// const jwt = require('jsonwebtoken');
-// const { getUserById } = require('../db');
-// const { JWT_SECRET } = process.env;
+const jwt = require('jsonwebtoken');
+const { getUserById } = require('../db');
+const { JWT_SECRET } = process.env;
+
+apiRouter.use(async(req, res, next) =>{
+    const prefix = 'Bearer';
+    const auth = req.header('Authorization');
+
+    if(!auth) {
+        next();
+    } else if (auth.startsWith(prefix)) {
+        const token = auth.slice(prefix.length);
+
+        try{
+            const {id} = jwt.verify(token, JWT_SECRET);
+
+            if(id) {
+                req.user = await getUserById(id);
+                next();
+            }
+        }catch ({name, message}) {
+            next({name, message});
+        }
+    }else {
+        next({
+            name: 'AuthorizationHeaderError',
+            message: `Authorization token muxt start with ${prefix}`
+        });
+    }
+});
+
+
+const morgan = require("morgan");
+app.use(morgan("dev"));
+
+const bodyParser = require('body-parser')
+app.use(bodyParser.json())
+
+const cors = require('cors')
+app.use(cors())
+
+
+app.use(express.json());
+
 
 // this is the router that puts us inside the api folder
-const apiRouter = require('./api');
+
 app.use('/api', apiRouter);
 
 
