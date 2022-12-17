@@ -6,7 +6,6 @@ const {
   createRoutine,
   updateRoutine,
   destroyRoutine,
-  updateRoutine,
 } = require("../db/routines");
 const router = express.Router();
 
