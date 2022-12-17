@@ -8,7 +8,7 @@ const apiRouter = require('./api');
 
 // this will allow us to use tokens in the future
 const jwt = require('jsonwebtoken');
-const { getUserById } = require('../db');
+const { getUserById } = require('./db');
 const { JWT_SECRET } = process.env;
 
 apiRouter.use(async(req, res, next) =>{
