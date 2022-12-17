@@ -10,6 +10,8 @@ const bcrypt = require('bcrypt');
 // create our hash function
 const SALT_COUNT = 10;
 
+const jwt = require('jsonwebtoken');
+
 // POST /api/users/login
 router.post('/api/users/login', async (request, response, next) => {
     try {
@@ -36,7 +38,6 @@ router.post('/api/users/login', async (request, response, next) => {
 // POST /api/users/register
 router.post('/api/users/register', async (request, response, next) => {
     try {
-
         // get the username and password
         // we are assuming (for now) those are inside of an object
         const { username, password } = request.body;
@@ -44,20 +45,29 @@ router.post('/api/users/register', async (request, response, next) => {
             next({
                 name: 'InvalidPasswordError',
                 message: 'Your password must be at least 8 characters long.'});
-        } 
+        }
         // hash the password
-        const hashedPassword = await bcrypt.compare(password, SALT_COUNT);
-        
-        const newUser = createUser(username, hashedPassword);
-
-        /*
-        still not sure how to check for duplicate usernames???
-        */
-
-        response.send(newUser);
+        const hashedPassword = bcrypt.hash(password, SALT_COUNT);
+        // check our user information against our database
+        const _user = await getUserByUsername(username);
+        // check if our username already exists. cant have dupes
+        if (_user) {
+            next({
+                name: "UserDuplicated",
+                message: "This user already exists. Try again"
+            })
+        }
+        // create a new user in the database
+        const {rows: user} = await createUser({username, hashedPassword});
+        // create a new token for new user
+        const token = jwt.sign({id: user.id, username: username}, process.env.JWT_SECRET);
+        response.send({user, token});
     } catch (error) {
         console.log('there was an error in router.post/api/users/register: ', error);
-        throw error;
+        next({
+            name: "CreateUserError",
+            message: "There was an error creating a new user."
+        });
     }
 })
 
