@@ -18,6 +18,7 @@ router.get("/api/routines", async (req, res, next) => {
   });
 });
 
+//TEST
 // POST /api/routines
 router.post("/api/routines", async (req, res, next) => {
   res.send("POSTED IN API/ROUTINES");
