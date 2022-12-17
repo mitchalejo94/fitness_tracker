@@ -33,7 +33,7 @@ router.get("/api/activities/:activityId/routines", async (req, res, next) => {
 // GET /api/activities
 router.get("/activities", async (req, res, next) => {
   try {
-    const allActivities = await getAllActivities();
+    const {allActivities} = await getAllActivities();
     res.send({allActivities});
    
   } catch (error) {
