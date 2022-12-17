@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
+//TEST
 // GET /api/health
 router.get("/health", async (req, res, next) => {
   res.send({ message: "Server is running" });
