@@ -41,7 +41,9 @@ router.post('/api/users/register', async (request, response, next) => {
         // we are assuming (for now) those are inside of an object
         const { username, password } = request.body;
         if (password.length < 8) {
-            throw new "Your password is too short";
+            next({
+                name: 'InvalidPasswordError',
+                message: 'Your password must be at least 8 characters long.'});
         } 
         // hash the password
         const hashedPassword = await bcrypt.compare(password, SALT_COUNT);
