@@ -9,10 +9,10 @@ const SALT_COUNT = 10;
 // database functions
 
 // user functions
-async function createUser({ username, password }) {
+async function createUser( username, password ) {
   // putting a new user into the database
   if (!username || !password) {
-    throw new ("You must include both a username and a password");
+    return;
   }
 
   // hashed password

@@ -1,4 +1,4 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
 
 // create user function to add to db
@@ -12,8 +12,13 @@ const SALT_COUNT = 10;
 
 const jwt = require('jsonwebtoken');
 
+router.get("/", async ( req, res ) => {
+res.send("TEST STRING")
+}
+)
+
 // POST /api/users/login
-router.post('/api/users/login', async (request, response, next) => {
+router.post('/login', async (request, response, next) => {
     try {
         // get the user information
         const { username, password } = request.body;
@@ -36,8 +41,9 @@ router.post('/api/users/login', async (request, response, next) => {
 });
 
 // POST /api/users/register
-router.post('/api/users/register', async (request, response, next) => {
+router.post('/register', async (request, response, next) => {
     try {
+        console.log("REQUEST BODY", request.body)
         // get the username and password
         // we are assuming (for now) those are inside of an object
         const { username, password } = request.body;
@@ -47,7 +53,7 @@ router.post('/api/users/register', async (request, response, next) => {
                 message: 'Your password must be at least 8 characters long.'});
         }
         // hash the password
-        const hashedPassword = bcrypt.hash(password, SALT_COUNT);
+        const hashedPassword = await bcrypt.hash(password, SALT_COUNT);
         // check our user information against our database
         const _user = await getUserByUsername(username);
         // check if our username already exists. cant have dupes
@@ -58,9 +64,11 @@ router.post('/api/users/register', async (request, response, next) => {
             })
         }
         // create a new user in the database
-        const {rows: user} = await createUser({username, hashedPassword});
+        console.log(username, hashedPassword, "USER AND HASH")
+        const user = await createUser(username, hashedPassword);
+        console.log("user console log", user)
         // create a new token for new user
-        const token = jwt.sign({id: user.id, username: username}, process.env.JWT_SECRET);
+        const token = jwt.sign({ username: username}, process.env.JWT_SECRET);
         response.send({user, token});
     } catch (error) {
         console.log('there was an error in router.post/api/users/register: ', error);
@@ -72,7 +80,7 @@ router.post('/api/users/register', async (request, response, next) => {
 })
 
 // GET /api/users/me
-router.get('/api/users/me', async (request, response, next) => {
+router.get('/me', async (request, response, next) => {
     try {
         // get the token from the header and check for a token
         const { token } = request.headers;
@@ -94,7 +102,7 @@ router.get('/api/users/me', async (request, response, next) => {
 })
 
 // GET /api/users/:username/routines
-router.get('/api/users/:username/routines', async (request, response, next) => {
+router.get('/:username/routines', async (request, response, next) => {
     try {
         const username = request.params;
         const routines = getAllRoutinesByUser(username);
