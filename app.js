@@ -58,12 +58,22 @@ app.use('/api', apiRouter);
 
 
 // error, req, res, next => error handling
-apiRouter.use('/', async (error, request, response, next) => {
-    response.send({
+app.use((error, req, res, next) => {
+    if (res.statusCode < 400) res.status(500);
+      res.send({
+        error: error.message,
         name: error.name,
-        message: error.message
-    }).status(404);
-});
+        message: error.message,
+        table: error.table
+      });
+  });
+
+// apiRouter.use('/', async (error, request, response, next) => {
+//     response.send({
+//         name: error.name,
+//         message: error.message
+//     }).status(404);
+// });
 
 module.exports = app;
 
