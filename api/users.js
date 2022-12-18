@@ -120,19 +120,30 @@ router.get('/me', async (request, response, next) => {
         const { token } = request.headers;
         console.log('token in /me: ', token)
         if (!token) {
-            throw new "You must be logged in.";
+            next({
+                name: "LogInError",
+                message: "You must be logged in to perform this function."
+            });
         }
+
         const { username } = request.body; // ?????
-
+        console.log('username in GET/me: ', username)
         // we probably want to send them all the routines and activities associated with this user
-        const routines = getAllRoutinesByUser(username);
-
+        const routines = await getAllRoutinesByUser(username);
+        console.log('routines in GET/me: ', routines)
         // add more?
-        response.send(routines);
+        response.send({
+            routines,
+            username,
+
+        });
 
     } catch (error) {
         console.log('there was an error in router.get/api/users/me: ', error);
-        throw error;
+        next({
+            name: "FetchRoutinesError",
+            message: "There was an error fetching all user routines."
+        });
     }
 })
 
@@ -152,7 +163,10 @@ router.get('/:username/routines', async (request, response, next) => {
         response.send(routines);
     } catch (error) {
         console.log('there was an error in router.get/api/users/username/routines: ', error);
-        throw error;
+        next({
+            name: "RoutinesError",
+            message: "There was an error fetching all routines for a user."
+        }).status(401)
     }
 })
 
