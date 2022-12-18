@@ -76,7 +76,7 @@ router.post('/register', async (request, response, next) => {
                 message: 'Your password must be at least 8 characters long.'});
         }
         // hash the password
-        const hashedPassword = await bcrypt.hash(password, SALT_COUNT);
+        // const hashPassword = await bcrypt.hash(password, SALT_COUNT);
         // check our user information against our database
         const _user = await getUserByUsername(username);
         // check if our username already exists. cant have dupes
@@ -87,8 +87,8 @@ router.post('/register', async (request, response, next) => {
             })
         }
         // create a new user in the database
-        console.log(username, hashedPassword, "USER AND HASH")
-        const user = await createUser(username, hashedPassword);
+        console.log(username, password, "USER AND HASH")
+        const user = await createUser({username, password});
         console.log("user console log", user)
         // create a new token for new user
         const token = jwt.sign({ username: username}, process.env.JWT_SECRET);

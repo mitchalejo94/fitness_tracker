@@ -9,11 +9,15 @@ const SALT_COUNT = 10;
 // database functions
 
 // user functions
-async function createUser( username, password ) {
+async function createUser( fields ) {
   // putting a new user into the database
-  if (!username || !password) {
+  console.log('fields in db/users: ', fields)
+  if (!fields.username || !fields.password) {
     return;
   }
+
+  const username = fields.username;
+  const password = fields.password;
 
   // hashed password
   const hashedPass = await bcrypt.hash(password, SALT_COUNT);
