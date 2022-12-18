@@ -10,16 +10,15 @@ const {
 const { getPublicRoutinesByActivity } = require("../db/routines");
 
 // GET /api/activities/:activityId/routines
-router.get("/api/activities/:activityId/routines", async (req, res, next) => {
+router.get("/:activityId/routines", async (req, res, next) => {
   const { activityId } = req.params;
-  console.log(activityId, "THIS IS ACTIVITY ID LINE 16");
   try {
     const activity = await getActivityById(activityId);
     if (!activity) {
       res.send({
         error: `Activity ${activityId} not found`,
-        name: "Activity Not Found",
-        message: `Activity ${activityId} not found Error`,
+        name: "ActivityNotFoundError",
+        message: `Activity ${activityId} not found`,
       });
     }
 
@@ -29,6 +28,18 @@ router.get("/api/activities/:activityId/routines", async (req, res, next) => {
     next({ name, message });
   }
 });
+
+// router.get('/:activityId/routines', async (req, res, next) => {
+//   try {
+//       const id = req.params.activityId;
+//       const routines = await getPublicRoutinesByActivity({ id });
+//       console.log(id, "look here")
+//       console.log(routines, "also check here")
+//       res.send(routines);        
+//   } catch (error) {
+//       next (error);
+//   }
+// });
 
 // GET /api/activities
 router.get("/", async (req, res, next) => {
