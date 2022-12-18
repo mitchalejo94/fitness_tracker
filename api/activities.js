@@ -31,9 +31,6 @@ router.get("/api/activities/:activityId/routines", async (req, res, next) => {
 });
 
 // GET /api/activities
-
-
-
 router.get("/", async (req, res, next) => {
   try {
     const allActivities = await getAllActivities();
@@ -45,54 +42,52 @@ router.get("/", async (req, res, next) => {
 });
 
 // POST /api/activities
-router.post("/", async (req, res, next) => {
+router.post('/', async(req, res, next) => {
   try {
-    if (!req.user)
-      res.status(401).send({
-        error: "You must be logged in to perform this action",
-        message: "You must be logged in to perform this action",
-        name: "Invalid Credentials Error",
-      });
-    else {
-      const { name, description } = req.body;
-      const _activity = await getActivityByName(name);
-      if (_activity) {
-        res.send({
-          error: `An activity with name ${name} already exists`,
-          name: "ActivityAlreadyExistsError",
-          message: `An activity with name ${name} already exists`,
-        });
-      }
-      const activity = await createActivity({ name, description });
-      if (activity) res.send({ name, description });
-    }
-  } catch ({ name, message }) {
-    next({ name, message });
+    const { name, description } = req.body;
+    const existingActivity = await getActivityByName(name);
+      if (existingActivity) {
+        next({
+          name: 'ActivityExistsError',
+          message: `An activity with name ${name} already exists`
+        })
+      } else {
+        const createdActivity = await createActivity({ name, description });
+          if (createdActivity) {
+            res.send(createdActivity)
+          }
+      } 
+  } catch (error) {
+    next(error);
   }
-});
+})
 
 // PATCH /api/activities/:activityId
-// router.patch("/:activityId", async (req, res, next) => {
-//   try {
-//     if () {
-//       const { name, description } = req.body;
-//       const id = req.params.activityId;
-//       const updatedActivity = await updateActivity({
-//         id,
-//         name,
-//         description,
-//       });
+router.patch('/:activityId', async(req, res, next) => {
+  try {
+  const { name, description } = req.body;
+  const { activityId } = req.params;
+  const existingActivity = await getActivityById(activityId);
+  const namedActivity = await getActivityByName(name);
 
-//       res.send(updatedActivity);
-//     } else {
-//       res.send({
-//         name: "MissingUserError",
-//         message: "You must be logged in to perform this action",
-//       });
-//     }
-//   } catch (error) {
-//     next(error);
-//   }
-// });
+    if (!existingActivity) {
+      next({
+        name: 'ActivityNotFoundError',
+        message: `Activity ${activityId} not found`
+      })
+
+    } else if (namedActivity) {
+          next({
+            name: 'ActivityExistsError',
+            message: `An activity with name ${name} already exists`
+        })
+      } else {
+        const updatedActivity = await updateActivity({id: activityId, name, description});
+          res.send(updatedActivity);
+      }
+  } catch (error) {
+    next (error);
+  }
+});
 
 module.exports = router;
