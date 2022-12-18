@@ -11,48 +11,58 @@ const { JWT_SECRET } = process.env;
 // require for hasing and checking passwords
 const bcrypt = require('bcrypt');
 // create our hash function
-const SALT_COUNT = 10;
+// const SALT_COUNT = 10;
 
 // required to build web tokens
 const jwt = require('jsonwebtoken');
 
 router.get("/", async ( req, res ) => {
 res.send("TEST STRING")
-}
-)
+});
 
 // POST /api/users/login
 router.post('/login', async (request, response, next) => {
     try {
-        // get the user information
-        console.log('request.body in /login: ', request.body);
+    
+        const { token } = request.headers; 
+
+        // console.log('request.body in /login: ', request.body);
         const { username, password } = request.body;
-        const { token } = request.headers;
-        console.log('token in /login: ', token);
-        const newToken = jwt.verify(token, JWT_SECRET)
-        console.log('password in /login: ', password);
-        // error message if no token
-        if (!newToken) {
+
+        if (!username || !password ){
             next({
-                name: "NotAuthenticatedError",
-                message: "You must register before logging in."
+                name: "LoginError",
+                message: "You must type a username and password"
             })
         }
 
-        // if there is a token, get our user info
         const ourUserFromDatabase = await getUserByUsername(username);
-
+        console.log('ouruser from database : ', ourUserFromDatabase)
         // compare the typed password to the hashed password from the database
-        const hashedPass = await bcrypt.compare(password, SALT_COUNT);
+        const hashedPass = await bcrypt.compareSync(password, ourUserFromDatabase.password);
         console.log('hashed pass in /login: ', hashedPass)
 
         // if the password doesn't match the stored hash password
-        if (hashedPass != ourUserFromDatabase.password) {
-            throw new "You typed the inncorrect password";
-        }
+        if (hashedPass == false) {
+            next({ 
+                name: "AuthorizationError",
+                message: "You typed the inncorrect password"
+            }) 
+        } 
+
+        const newToken = await jwt.sign({ username: ourUserFromDatabase.username, id: ourUserFromDatabase.id }, JWT_SECRET,);
+
+        console.log('did we get a new token? ', newToken);
 
         // we still have to do something with the token below
-        response.send(ourUserFromDatabase.id, username, newToken)
+        response.send({
+            message: "you're logged in!",
+            user: {
+                username: ourUserFromDatabase.username,
+                id: ourUserFromDatabase.id
+            },
+            token: newToken
+        })
 
     } catch (error) {
         console.log('there was an error in router.post/api/users/login: ', error);
@@ -66,14 +76,15 @@ router.post('/login', async (request, response, next) => {
 // POST /api/users/register
 router.post('/register', async (request, response, next) => {
     try {
-        console.log("REQUEST BODY", request.body)
+        // console.log("REQUEST BODY", request.body)
         // get the username and password
         // we are assuming (for now) those are inside of an object
         const { username, password } = request.body;
         if (password.length < 8) {
             next({
-                name: 'InvalidPasswordError',
-                message: 'Your password must be at least 8 characters long.'});
+                name: `Password Too Short!`,
+                message: "Password Too Short!"
+            });
         }
         // hash the password
         // const hashPassword = await bcrypt.hash(password, SALT_COUNT);
@@ -82,19 +93,19 @@ router.post('/register', async (request, response, next) => {
         // check if our username already exists. cant have dupes
         if (_user) {
             next({
-                name: "UserDuplicated",
-                message: "This user already exists. Try again"
-            })
+                name: `User ${username} is already taken.`,
+                message: `User ${username} is already taken.`,
+            });
         }
         // create a new user in the database
-        console.log(username, password, "USER AND HASH")
+        // console.log(username, password, "USER AND HASH")
         const user = await createUser({username, password});
-        console.log("user console log", user)
+        // console.log("user console log", user)
         // create a new token for new user
         const token = jwt.sign({ username: username}, process.env.JWT_SECRET);
-        response.send({user, token});
+        response.send({message: "Thank you for signing up!", user, token});
     } catch (error) {
-        console.log('there was an error in router.post/api/users/register: ', error);
+        // console.log('there was an error in router.post/api/users/register: ', error);
         next({
             name: "CreateUserError",
             message: "There was an error creating a new user."
