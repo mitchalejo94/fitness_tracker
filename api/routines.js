@@ -6,15 +6,16 @@ const {
   createRoutine,
   updateRoutine,
   destroyRoutine,
+  updateRoutine,
 } = require("../db/routines");
 const router = express.Router();
 
 // GET /api/routines
 router.get("/routines", async (req, res, next) => {
   const allRoutines = await getAllRoutines();
-  res.send({
+  res.send(
     allRoutines,
-  });
+  );
 });
 
 //TEST
@@ -25,7 +26,29 @@ router.post("/routines", async (req, res, next) => {
 
 // PATCH /api/routines/:routineId
 
-router.patch("/routines/:routineId", async (req, res, next) => {});
+router.patch("/routines/:routineId", async (req, res, next) => {
+    try{
+        if(){
+            const {name,description}= req.body
+            const routineId = req.params.routineId
+            const updateRoutine = await updateRoutine({
+                id,
+                name,
+                description
+            })
+            res.send(updateRoutine)
+
+        }else{
+            res.send({
+                name: "MissingRoutineError",
+         message: "You must be logged in to perform this action",
+            })
+        }
+
+    }catch (error){
+        next (error)
+    }
+});
 
 // DELETE /api/routines/:routineId
 router.delete("/routines/:routineId", async (req, res, next) => {
