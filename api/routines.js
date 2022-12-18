@@ -7,19 +7,25 @@ const {
   destroyRoutine,
   updateRoutine,
 } = require("../db/routines");
+const {getAllActivities}= require ("../db/activities")
 const router = express.Router();
 
 // GET /api/routines
 router.get("/routines", async (req, res, next) => {
   const allRoutines = await getAllRoutines();
+  const allActivities = await getAllActivities();
   res.send(
-    allRoutines,
+    allRoutines,allActivities
   );
 });
 
 //TEST
 // POST /api/routines
 router.post("/routines", async (req, res, next) => {
+
+    try{
+        const {username, }
+    }
   res.send("POSTED IN API/ROUTINES");
 });
 
@@ -30,12 +36,12 @@ router.patch("/routines/:routineId", async (req, res, next) => {
         if(){
             const {name,description}= req.body
             const routineId = req.params.routineId
-            const updateRoutine = await updateRoutine({
+            const updtRoutine = await updateRoutine({
                 id,
                 name,
                 description
             })
-            res.send(updateRoutine)
+            res.send(updtRoutine)
 
         }else{
             res.send({
