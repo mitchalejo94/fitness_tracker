@@ -4,7 +4,6 @@ const {
   getAllRoutines,
   getRoutineById,
   createRoutine,
-  updateRoutine,
   destroyRoutine,
   updateRoutine,
 } = require("../db/routines");
@@ -41,7 +40,7 @@ router.patch("/routines/:routineId", async (req, res, next) => {
         }else{
             res.send({
                 name: "MissingRoutineError",
-         message: "You must be logged in to perform this action",
+                message: "You must be logged in to perform this action",
             })
         }
 
