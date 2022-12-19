@@ -101,48 +101,31 @@ router.delete("/:routineId", async (req, res, next) => {
 });
 
 // POST /api/routines/:routineId/activities
-router.post("/:routineId/activities", async (req, res, next) => {
-  if (!req.user)
-    res.status(401).send({
-      error: "You must be logged in to perform this action",
-      message: "You must be logged in to perform this action",
-      name: "InvalidCredentialsError",
-    });
+router.post('/:routineId/activities', async(req, res, next) => {
   const routineId = req.params.routineId;
-  const { activityId, count, duration } = req.body;
-
+  const {activityId, count, duration} = req.body
+  
   try {
-    const routine = await getRoutineById(routineId);
-    const _routine_activities = await getRoutineActivitiesByRoutine(routine);
-    if (_routine_activities) {
-      for (let routine_activity of _routine_activities) {
-        if (routine_activity.activityId == activityId) {
+      const routine = await getRoutineById(routineId);
+      
+      if (routine.creatorId === req.user.id) {
+          const updatedActivity = await addActivityToRoutine({ routineId, activityId, count, duration });
+          res.send(updatedActivity);
+      } else {
+          res.status(403);
           res.send({
-            error: `Activity ID ${activityId} already exists in Routine ID ${routineId}`,
-            message: `Activity ID ${activityId} already exists in Routine ID ${routineId}`,
-            name: "UniqueConstraintViolationError",
-          });
-        }
+              error: "error posting routine_activities",
+              message: `Activity ID ${activityId} already exists in Routine ID ${routineId}`,
+              name: "DuplicateRoutineActivityError"
+          })
       }
-    }
-
-    if (routine.creatorId === req.user.id) {
-      const routineActivity = await addActivityToRoutine({
-        routineId,
-        activityId,
-        count,
-        duration,
-      });
-      res.send(routineActivity);
-    } else {
-      res.status(403).send({
-        name: "UnauthorizedUserError",
-        message: "Current user is not authorized to perform that action",
-      });
-    }
-  } catch ({ name, message }) {
-    next({ name, message });
+  } catch ({name, message}) {
+      res.send({
+          error: "error posting routine_activities",
+          message: `Activity ID ${activityId} already exists in Routine ID ${routineId}`,
+          name: "DuplicateRoutineActivityError"
+      })
   }
-});
+})
 
 module.exports = router;
