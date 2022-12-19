@@ -94,43 +94,86 @@ router.post("/login", async (req, res, next) => {
 
 
 // POST /api/users/register
-router.post('/register', async (request, response, next) => {
+router.post("/register", async (req, res, next) => {
+    const { username, password } = req.body;
+  
     try {
-        console.log("REQUEST BODY", request.body)
-        // get the username and password
-        // we are assuming (for now) those are inside of an object
-        const { username, password } = request.body;
-        if (password.length < 8) {
-            next({
-                name: 'InvalidPasswordError',
-                message: 'Your password must be at least 8 characters long.'});
-        }
-        // hash the password
-        // const hashPassword = await bcrypt.hash(password, SALT_COUNT);
-        // check our user information against our database
-        const _user = await getUserByUsername(username);
-        // check if our username already exists. cant have dupes
-        if (_user) {
-            next({
-                name: "UserDuplicated",
-                message: "This user already exists. Try again"
-            })
-        }
-        // create a new user in the database
-        console.log(username, password, "USER AND HASH")
-        const user = await createUser({username, password});
-        console.log("user console log", user)
-        // create a new token for new user
-        const token = jwt.sign({ username: username}, process.env.JWT_SECRET);
-        response.send({user, token});
-    } catch (error) {
-        console.log('there was an error in router.post/api/users/register: ', error);
-        next({
-            name: "CreateUserError",
-            message: "There was an error creating a new user."
+      const _user = await getUserByUsername(username);
+  
+      if (_user) {
+        res.send({
+          error: `User ${username} is already taken.`,
+          name: "UserDuplicated",
+          message: `User ${username} is already taken.`,
         });
+      }
+  
+      if (password.length < 8) {
+        res.send({
+          error: "Password Too Short!",
+          name: "PasswordLengthError",
+          message: "Password Too Short!",
+        });
+      }
+  
+      const { id } = await createUser({ username, password });
+  
+      const token = jwt.sign(
+        {
+          id: id,
+          username,
+        },
+        JWT_SECRET,
+        { expiresIn: "1w" }
+      );
+  
+      res.json({
+        message: "success",
+        token,
+        user: { id: id, username },
+      });
+    } catch ({ name, message }) {
+      next({ name, message });
     }
-})
+  });
+
+// router.post('/register', async (request, response, next) => {
+//     try {
+//         console.log("REQUEST BODY", request.body)
+//         // get the username and password
+//         // we are assuming (for now) those are inside of an object
+//         const { username, password } = request.body;
+//         if (password.length < 8) {
+//             next({
+//                 name: 'InvalidPasswordError',
+//                 message: 'Your password must be at least 8 characters long.'});
+//         }
+//         // hash the password
+//         // const hashPassword = await bcrypt.hash(password, SALT_COUNT);
+//         // check our user information against our database
+//         const _user = await getUserByUsername(username);
+//         // check if our username already exists. cant have dupes
+//         if (_user) {
+//             next({
+//                 name: "UserDuplicated",
+//                 message: "This user already exists. Try again"
+//             })
+//         }
+//         // create a new user in the database
+//         console.log(username, password, "USER AND HASH")
+//         const user = await createUser({username, password});
+//         console.log("user console log", user)
+//         // create a new token for new user
+//         const token = jwt.sign({ username: username}, process.env.JWT_SECRET);
+//         response.send({user, token});
+//     } catch (error) {
+//         console.log('there was an error in router.post/api/users/register: ', error);
+//         next({
+//             name: "CreateUserError",
+//             message: "There was an error creating a new user."
+//         });
+//     }
+// })
 
 // GET /api/users/me
 router.get('/me', async (req, res, next) =>{
@@ -156,7 +199,7 @@ router.get('/me', async (req, res, next) =>{
 
 
 // GET /api/users/:username/routines
-router.get('/:username/routines', async (request, response, next) => {
+router.get('/:username/routines', async (request, response) => {
     try {
         const username = request.params;
         // console.log('username', username);
