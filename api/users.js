@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 // create user function to add to db
-const { createUser, getUserByUsername } = require('../db/users');
+const { createUser, getUserByUsername, getUserById } = require('../db/users');
 const { getAllRoutinesByUser } = require('../db/routines');
 
 // get our secret files
@@ -103,27 +103,27 @@ router.post('/register', async (request, response, next) => {
 })
 
 // GET /api/users/me
-router.get('/me', async (request, response, next) => {
+router.get('/me', async (req, res, next) =>{
+    const prefix = 'Bearer ';
+    const auth = req.headers.authorization;
     try {
-        // get the token from the header and check for a token
-        const { token } = request.headers;
-        console.log('token in /me: ', token)
-        if (!token) {
-            throw new "You must be logged in.";
+        if (!auth) {
+            res.status(401).send({
+            error: "You must be logged in to perform this action",
+            message: "You must be logged in to perform this action",
+            name: "InvalidCredentialsError",
+            })
+        } else if (auth.startsWith(prefix)) {
+            const token = auth.slice(prefix.length)
+            const { id } = jwt.verify(token, JWT_SECRET);
+            req.user = await getUserById(id);
+            res.send(req.user)
         }
-        const { username } = request.body; // ?????
-
-        // we probably want to send them all the routines and activities associated with this user
-        const routines = getAllRoutinesByUser(username);
-
-        // add more?
-        response.send(routines);
-
     } catch (error) {
-        console.log('there was an error in router.get/api/users/me: ', error);
-        throw error;
-    }
-})
+        next (error);
+    }  
+}); 
+
 
 // GET /api/users/:username/routines
 router.get('/:username/routines', async (request, response, next) => {
