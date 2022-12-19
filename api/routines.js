@@ -1,53 +1,99 @@
 //TEST
 const express = require("express");
 const {
-  getAllRoutines,
   getRoutineById,
   createRoutine,
   updateRoutine,
   destroyRoutine,
+  getAllPublicRoutines,
 } = require("../db/routines");
+const {
+  addActivityToRoutine,
+  getRoutineActivitiesByRoutine,
+} = require("../db/routine_activities");
 const router = express.Router();
 
 // GET /api/routines
-router.get("/api/routines", async (req, res, next) => {
-  const allRoutines = await getAllRoutines();
-  res.send({
-    allRoutines,
-  });
+router.get("/", async (req, res, next) => {
+  try {
+    const routines = await getAllPublicRoutines();
+    res.json(routines);
+  } catch ({ name, message }) {
+    next({ name, message });
+  }
 });
 
 //TEST
 // POST /api/routines
-router.post("/api/routines", async (req, res, next) => {
-  res.send("POSTED IN API/ROUTINES");
+router.post("/", async (req, res, next) => {
+  if (!req.user)
+    res.status(401).send({
+      error: "You must be logged in to perform this action",
+      message: "You must be logged in to perform this action",
+      name: "InvalidCredentialsError",
+    });
+
+  try {
+    const { isPublic, name, goal } = req.body;
+    const creatorId = req.user.id;
+    const routineData = { creatorId, isPublic, name, goal };
+    const newRoutine = await createRoutine(routineData);
+    res.json(newRoutine);
+  } catch ({ name, message }) {
+    next({ name, message });
+  }
 });
 
 // PATCH /api/routines/:routineId
 
-router.patch("/api/routines/:routineId", async (req, res, next) => {});
+router.patch("/:routineId", async (req, res, next) => {
+  if (!req.user)
+    res.status(401).send({
+      error: "You must be logged in to perform this action",
+      message: "You must be logged in to perform this action",
+      name: "InvalidCredentialsError",
+    });
+  const { routineId } = req.params;
+  const { isPublic, name, goal } = req.body;
+
+  try {
+    const original = await getRoutineById(routineId);
+    if (original && original.creatorId === req.user.id) {
+      const updatedRoutine = await updateRoutine({
+        id: routineId,
+        isPublic,
+        name,
+        goal,
+      });
+      res.send(updatedRoutine);
+    } else {
+      res.status(403).send({
+        error: `User ${req.user.username} is not allowed to update ${original.name}`,
+        message: `User ${req.user.username} is not allowed to update ${original.name}`,
+        name: "UnathorizedActionError",
+      });
+    }
+  } catch ({ name, message }) {
+    next({ name, message });
+  }
+});
 
 // DELETE /api/routines/:routineId
-router.delete("/api/routines/:routineId", async (req, res, next) => {
+router.delete("/:routineId", async (req, res, next) => {
+  const { routineId } = req.params;
+
   try {
-    const routines = await getRoutineById(req.params.routineId);
+    const routine = await getRoutineById(routineId);
 
-    if (routines && routines.creator.id === req.user.id) {
-      const updateRoutine = await updateRoutine(routines.id, { active: false });
-
-      res.send({ routines: updateRoutine });
+    if (routine && routine.creatorId === req.user.id) {
+      const deletedRoutine = await destroyRoutine(routineId);
+      res.send(deletedRoutine);
     } else {
-      next(
-        routines
-          ? {
-              name: "UnauthorizedUserError",
-              message: "You cannot delete a routine which is not yours",
-            }
-          : {
-              name: "RoutineNotFoundError",
-              message: "That Routine does not exist",
-            }
-      );
+      res.status(403).send({
+        error: `User ${req.user.username} is not allowed to delete ${routine.name}`,
+        message: `User ${req.user.username} is not allowed to delete ${routine.name}`,
+        name: "UnauthorizedActionError",
+      });
     }
   } catch ({ name, message }) {
     next({ name, message });
@@ -55,9 +101,48 @@ router.delete("/api/routines/:routineId", async (req, res, next) => {
 });
 
 // POST /api/routines/:routineId/activities
-router.post(
-  "/api/routines/:routineId/activities",
-  async (req, res, next) => {}
-);
+router.post("/:routineId/activities", async (req, res, next) => {
+  if (!req.user)
+    res.status(401).send({
+      error: "You must be logged in to perform this action",
+      message: "You must be logged in to perform this action",
+      name: "InvalidCredentialsError",
+    });
+  const routineId = req.params.routineId;
+  const { activityId, count, duration } = req.body;
+
+  try {
+    const routine = await getRoutineById(routineId);
+    const _routine_activities = await getRoutineActivitiesByRoutine(routine);
+    if (_routine_activities) {
+      for (let routine_activity of _routine_activities) {
+        if (routine_activity.activityId == activityId) {
+          res.send({
+            error: `Activity ID ${activityId} already exists in Routine ID ${routineId}`,
+            message: `Activity ID ${activityId} already exists in Routine ID ${routineId}`,
+            name: "UniqueConstraintViolationError",
+          });
+        }
+      }
+    }
+
+    if (routine.creatorId === req.user.id) {
+      const routineActivity = await addActivityToRoutine({
+        routineId,
+        activityId,
+        count,
+        duration,
+      });
+      res.send(routineActivity);
+    } else {
+      res.status(403).send({
+        name: "UnauthorizedUserError",
+        message: "Current user is not authorized to perform that action",
+      });
+    }
+  } catch ({ name, message }) {
+    next({ name, message });
+  }
+});
 
 module.exports = router;
