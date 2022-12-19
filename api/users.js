@@ -11,7 +11,7 @@ const { JWT_SECRET } = process.env;
 // require for hasing and checking passwords
 const bcrypt = require('bcrypt');
 // create our hash function
-const SALT_COUNT = 10;
+// const SALT_COUNT = 10;
 
 // required to build web tokens
 const jwt = require('jsonwebtoken');
@@ -22,46 +22,76 @@ res.send("TEST STRING")
 )
 
 // POST /api/users/login
-router.post('/login', async (request, response, next) => {
-    try {
-        // get the user information
-        console.log('request.body in /login: ', request.body);
-        const { username, password } = request.body;
-        const { token } = request.headers;
-        console.log('token in /login: ', token);
-        const newToken = jwt.verify(token, JWT_SECRET)
-        console.log('password in /login: ', password);
-        // error message if no token
-        if (!newToken) {
-            next({
-                name: "NotAuthenticatedError",
-                message: "You must register before logging in."
-            })
-        }
-
-        // if there is a token, get our user info
-        const ourUserFromDatabase = await getUserByUsername(username);
-
-        // compare the typed password to the hashed password from the database
-        const hashedPass = await bcrypt.compare(password, SALT_COUNT);
-        console.log('hashed pass in /login: ', hashedPass)
-
-        // if the password doesn't match the stored hash password
-        if (hashedPass != ourUserFromDatabase.password) {
-            throw new "You typed the inncorrect password";
-        }
-
-        // we still have to do something with the token below
-        response.send(ourUserFromDatabase.id, username, newToken)
-
-    } catch (error) {
-        console.log('there was an error in router.post/api/users/login: ', error);
-        next({
-            name: "LoginError",
-            message: "There was an error logging in."
-        })
+router.post("/login", async (req, res, next) => {
+    const { username, password } = req.body;
+  
+    if (!username || !password) {
+      next({
+        name: "MissingCredentialsError",
+        message: "Missing username or password",
+      });
     }
-});
+  
+    try {
+      const user = await getUserByUsername(username);
+      bcrypt.compare(password, user.password, (error) => {
+        if (error) {
+          next({
+            name: "UserAuthenticationError",
+            message: "username or password was incorrect",
+          });
+        } else {
+          const token = jwt.sign(
+            {
+              id: user.id,
+              username,
+            },
+            JWT_SECRET,
+            { expiresIn: "1w" }
+          );
+  
+          res.json({
+            message: "you're logged in!",
+            token,
+            user: { id: user.id, username },
+          });
+        }
+      });
+    } catch ({ name, message }) {
+      next({ name, message });
+    }
+  });
+
+// only passing last test
+// router.post('/login', async (req, res, next) => {
+//     const { username, password } = req.body;
+//     try {
+//         const user = await getUserByUsername(username);
+//         const hashedPassword = user.password;
+//         const passwordsMatch = await bcrypt.compare(password, hashedPassword);
+
+//         if (!username || !password) {
+//             next ({
+//                 name: 'MissingCredentialsError',
+//                 message: 'Please supply both a username and password'
+//             });
+//         };
+
+//         if (user && passwordsMatch) {
+//             const token = jwt.sign(user, JWT_SECRET);
+//             res.send({ token });
+//         } else {
+//             next({
+//                 name: 'IncorrectCredentialError',
+//                 message: 'Username or password is incorrect'
+//             });
+//         }    
+//     } catch (error) {
+//         next(error);
+//     }
+// });
+
+
 
 // POST /api/users/register
 router.post('/register', async (request, response, next) => {
