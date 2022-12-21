@@ -7,9 +7,11 @@
     "seed:dev": "nodemon ./db/seed.js",
     "seed": "node ./db/seed.js",
     "start:dev": "nodemon server.js",
-    "start": "node server.js",
+    "start": "react-scripts start",
+    "start-old ": "node server.js",
     "test": "jest --runInBand",
-    "test:watch": "jest --runInBand --watchAll"
+    "test:watch": "jest --runInBand --watchAll",
+    "build": "react-scripts build"
   },
   "repository": {
     "type": "git",
@@ -49,5 +51,17 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-scripts": "^5.0.1"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }
