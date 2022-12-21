@@ -12,7 +12,6 @@ const {
   getRoutineActivitiesByRoutine,
 } = require("../db/routine_activities");
 
-const { jwt } = require('jsonwebtoken')
 const router = express.Router();
 
 // GET /api/routines
@@ -107,8 +106,8 @@ router.delete("/:routineId", async (req, res, next) => {
 router.post('/:routineId/activities', async(req, res, next) => {
   const routineId = req.params.routineId;
   const {activityId, count, duration} = req.body
-  console.log('this should be valid info: ', req.body)
-  console.log('headers? : ', req.headers)
+  // console.log('this is req.body: ', req.body)
+  // console.log('headers? : ', req.headers)
   // console.log('just the whole req: ', req);
   // const token = req.headers.authorization.slice(7);
   // console.log('token: ', token)
@@ -117,21 +116,21 @@ router.post('/:routineId/activities', async(req, res, next) => {
 
   try {
       const routine = await getRoutineById(routineId);
-      console.log('routinesActivities in router/post: ', routine)
-      if (routine.creatorId) {
-          const addedActivity = await addActivityToRoutine({ routineId, activityId, count, duration });
-          console.log('did we add activity?: ', addedActivity)
-          res.send(addedActivity);
-      } else {
-          res.status(403);
+      // console.log('routinesActivities in router/post: ', routine)
+      if (routine.activityId == activityId) {
+        res.status(403);
           next({
               error: "error posting routine_activities",
               message: `Activity ID ${activityId} already exists in Routine ID ${routineId}`,
               name: "DuplicateRoutineActivityError"
           })
+      } else {
+        const addedActivity = await addActivityToRoutine({ routineId, activityId, count, duration });
+        // console.log('did we add activity?: ', addedActivity)
+        res.send(addedActivity);
       }
-  } catch ({name, message}) {
-      res.send({
+  } catch (error) {
+      next({
           error: "error posting routine_activities",
           message: `Activity ID ${activityId} already exists in Routine ID ${routineId}`,
           name: "DuplicateRoutineActivityError"
