@@ -126,10 +126,10 @@ router.get('/me', async (request, response, next) => {
             });
         }
 
-        const { username } = request.body; // ?????
+        const { username } = jwt.verify(token, JWT_SECRET); // ?????
         console.log('username in GET/me: ', username)
         // we probably want to send them all the routines and activities associated with this user
-        const routines = await getAllRoutinesByUser(username);
+        const routines = await getUserByUsername(username);
         console.log('routines in GET/me: ', routines)
         // add more?
         response.send({
