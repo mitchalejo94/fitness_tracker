@@ -80,29 +80,43 @@ router.patch("/:routineId", async (req, res, next) => {
 });
 
 // DELETE /api/routines/:routineId
+//not passing any tests
+// router.delete("/:routineId", async (req, res, next) => {
+  
+//   try {
+//     const { routineId } = req.params;
+//     const routine = await getRoutineById(routineId);
+//     const deletedRoutine = await destroyRoutine(routineId);
+//     const isOwner = req.user.id === routine.creatorId;
+//     console.log('look here', routine.creatorId)
+//     console.log('req.user.id look', req.user.id)
+//     if (isOwner) {
+      
+//       res.send(deletedRoutine);
+//     } else {
+//       res.status(403).send({
+//         error: `User ${req.user.username} is not allowed to delete ${routine.name}`,
+//         message: `User ${req.user.username} is not allowed to delete ${routine.name}`,
+//         name: "UnauthorizedActionError",
+//       });
+//     }
+//   } catch ({ name, message }) {
+//     next({ name, message });
+//   }
+// });
+
+//passes first test
 router.delete("/:routineId", async (req, res, next) => {
-  const { routineId } = req.params;
-
   try {
-    const routine = await getRoutineById(routineId);
-
-    if (routine && routine.creatorId === req.user.id) {
-      const deletedRoutine = await destroyRoutine(routineId);
-      res.send(deletedRoutine);
-    } else {
-      res.status(403).send({
-        error: `User ${req.user.username} is not allowed to delete ${routine.name}`,
-        message: `User ${req.user.username} is not allowed to delete ${routine.name}`,
-        name: "UnauthorizedActionError",
-      });
-    }
-  } catch ({ name, message }) {
-    next({ name, message });
+    const { routineId } = req.params;
+    const deleteRoutine = await destroyRoutine(routineId);
+    res.send(deleteRoutine);
+  } catch (error) {
+    next(error);
   }
-});
+})
 
 // POST /api/routines/:routineId/activities
-//-------passes second test
 router.post('/:routineId/activities', async(req, res, next) => {
   const routineId = req.params.routineId;
   const {activityId, count, duration} = req.body
@@ -139,41 +153,5 @@ router.post('/:routineId/activities', async(req, res, next) => {
 })
 
 
-
-//-------passes first test
-// router.post('/:routineId/activities', async(req, res, next) => {
-//   const routineId = req.params.routineId;
-//   const {activityId, count, duration} = req.body
-//   try {
-//     const routineActivities = await getRoutineActivitiesByRoutine({
-//       id: routineId,
-//     });
-//     const filteredActivities = routineActivities.filter((routine) => {
-//       return activityId === routine.activityId;
-//     });
-
-//     if (filteredActivities.length > 0) {
-//       res.status(403);
-//       next({
-//         name: "ActivityExists",
-//         message: "This activity already exists",
-//       });
-//     } else {
-//       const addedActivity = await addActivityToRoutine({
-//         routineId,
-//         activityId,
-//         count,
-//         duration,
-//       });
-//       res.send(addedActivity);
-//     }
-//   } catch ({ name, message }) {
-//     res.send ({
-//       error: "error posting routine_activities",
-//       message: `Activity ID ${activityId} already exists in Routine ID ${routineId}`,
-//       name: "DuplicateRoutineActivityError"
-//     })
-//   }
-// })
 
 module.exports = router;
