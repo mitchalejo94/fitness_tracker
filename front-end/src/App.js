@@ -5,23 +5,26 @@ import { Route, Switch, Link, useHistory} from "react-router-dom";
 
 const App = () => {
     return <div>
-      Hello World
-      <nav>
-        <Link to="/">
-            Home
+      <nav className="ui horizontal menu">
+        <div class="item">
+        <Link className="header" to="/">
+           Fitness Tracker
         </Link>
-        <Link to="/accountform">
-            AccountForm 
-        </Link>
-        <Link to="/activities">
+        <Link className="item" to="/activities">
             Activites
         </Link>
-        <Link to="/routines">
+        <Link className="item" to="/routines">
             Routines
         </Link>
-        <Link to="/myroutines">
+        <Link className="item" to="/myroutines">
            My Routines
         </Link>
+        </div>
+        <div className="right menu">
+        <Link className="item" to="/accountform">
+            Login / Register
+        </Link>
+        </div>
       </nav>
 <Switch>
     <Route exact path ="/">
