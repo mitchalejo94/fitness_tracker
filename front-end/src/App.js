@@ -4,7 +4,9 @@ import {Home, AccountForm, Activities, Routines, MyRoutines} from "./components"
 import { Route, Switch, Link, useHistory} from "react-router-dom";
 
 const App = () => {
-    return <div>
+    return (
+    <div>
+        
       <nav className="ui horizontal menu">
         <div class="item">
         <Link className="header" to="/">
@@ -26,6 +28,7 @@ const App = () => {
         </Link>
         </div>
       </nav>
+      
 <Switch>
     <Route exact path ="/">
         <Home />
@@ -44,6 +47,7 @@ const App = () => {
     </Route>
 </Switch>
     </div>
+    )
   }
 
 
