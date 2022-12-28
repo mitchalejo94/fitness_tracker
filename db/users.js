@@ -11,7 +11,7 @@ const SALT_COUNT = 10;
 // user functions
 async function createUser( fields ) {
   // putting a new user into the database
-  console.log('fields in db/users: ', fields)
+  // console.log('fields in db/users: ', fields)
   if (!fields.username || !fields.password) {
     return;
   }
