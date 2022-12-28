@@ -80,23 +80,54 @@ router.patch("/:routineId", async (req, res, next) => {
 });
 
 // DELETE /api/routines/:routineId
-//not passing any tests
+
+//no tests passing
+// router.delete('/:routineId', async(req, res, next) => {
+//   try {
+//       const {routineId} = req.params
+//       const _routine = await getRoutineById(routineId)
+//       console.log('look here', req.user)
+//       if(!req.user) {
+//           next({
+//               error: 'not logged in',
+//               message: "UnauthorizedError()",
+//               name: 'must be logged in'
+//           })
+//       } else if(_routine.creatorId !== req.user.id) {
+//           next({
+//               status: 403,
+//               error: 'user is not owner',
+//               message: "UnauthorizedDeleteError(req.user.username, _routine.name)",
+//               name: 'Cannot delete routines that you did not create'
+//           })
+//       } else {
+//           const deletedRoutine = await destroyRoutine(routineId)
+
+//           res.send(deletedRoutine)
+//       }
+      
+//   } catch(error) {
+//       next(error)
+//   }
+// })
+
+//passes first test
 // router.delete("/:routineId", async (req, res, next) => {
-  
+ 
 //   try {
 //     const { routineId } = req.params;
 //     const routine = await getRoutineById(routineId);
 //     const deletedRoutine = await destroyRoutine(routineId);
-//     const isOwner = req.user.id === routine.creatorId;
-//     console.log('look here', routine.creatorId)
-//     console.log('req.user.id look', req.user.id)
-//     if (isOwner) {
+//     // console.log('look here', routine.creatorId)
+//     // console.log('answer', req.user)
+
+//     if (!req.user) {
       
 //       res.send(deletedRoutine);
 //     } else {
 //       res.status(403).send({
-//         error: `User ${req.user.username} is not allowed to delete ${routine.name}`,
-//         message: `User ${req.user.username} is not allowed to delete ${routine.name}`,
+//         error: `User is not allowed to delete ${routine.name}`,
+//         message: `User is not allowed to delete ${routine.name}`,
 //         name: "UnauthorizedActionError",
 //       });
 //     }
@@ -105,7 +136,34 @@ router.patch("/:routineId", async (req, res, next) => {
 //   }
 // });
 
+//No tests passing
+// router.delete("/:routineId", async (req, res, next) => {
+ 
+//   try {
+//     const { routineId } = req.params;
+//     const routine = await getRoutineById(routineId);
+//     const deletedRoutine = await destroyRoutine(routineId);
+//     // console.log('look here', routine.creatorId)
+
+//     if (!req.user) {
+//       res.status(403).send({
+//         error: `User is not allowed to delete ${routine.name}`,
+//         message: `User is not allowed to delete ${routine.name}`,
+//         name: "UnauthorizedActionError",
+//       });
+      
+//     } else {
+//       res.send(deletedRoutine);
+//     }
+//   } catch ({ name, message }) {
+//     next({ name, message });
+//   }
+// });
+
 //passes first test
+// ✕ Hard deletes a routine. Makes sure to delete all the routineActivities whose routine is the one being deleted
+// ✕ returns a 403 when the user deletes a routine that isn't theirs 
+
 router.delete("/:routineId", async (req, res, next) => {
   try {
     const { routineId } = req.params;
