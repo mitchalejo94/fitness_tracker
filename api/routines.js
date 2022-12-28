@@ -28,7 +28,7 @@ router.get("/", async (req, res, next) => {
 // POST /api/routines
 router.post("/", async (req, res, next) => {
   if (!req.user)
-    res.status(401).send({
+    res.status(403).send({
       error: "You must be logged in to perform this action",
       message: "You must be logged in to perform this action",
       name: "InvalidCredentialsError",
@@ -49,7 +49,7 @@ router.post("/", async (req, res, next) => {
 
 router.patch("/:routineId", async (req, res, next) => {
   if (!req.user)
-    res.status(401).send({
+    res.status(403).send({
       error: "You must be logged in to perform this action",
       message: "You must be logged in to perform this action",
       name: "InvalidCredentialsError",
@@ -164,15 +164,52 @@ router.patch("/:routineId", async (req, res, next) => {
 // ✕ Hard deletes a routine. Makes sure to delete all the routineActivities whose routine is the one being deleted
 // ✕ returns a 403 when the user deletes a routine that isn't theirs 
 
-router.delete("/:routineId", async (req, res, next) => {
-  try {
-    const { routineId } = req.params;
-    const deleteRoutine = await destroyRoutine(routineId);
-    res.send(deleteRoutine);
-  } catch (error) {
-    next(error);
+// router.delete("/:routineId", async (req, res, next) => {
+//   try {
+//     const { routineId } = req.params;
+//     const deleteRoutine = await destroyRoutine(routineId);
+//     res.send(deleteRoutine);
+//   } catch (error) {
+//     next(error);
+//   }
+// })
+
+const requireUser = (req,res,next)=>{
+  if(!req.user){
+    res.statusCode = 403;
+    next({
+      name: 'MissingUserError',
+      message: 'You must be logged in'
+    })
   }
+  next()
+}
+
+router.delete("/:routineId", requireUser, async (req, res, next) => {
+  try {
+    const routineId = req.params.routineId
+    const {name}= req.body
+    const routine = await getRoutineById(routineId)
+
+    if(routine.creatorId !== req.user.id){
+      res.statusCode = 403
+      next({
+        name: "UnauthorizedUserError",
+          message: `User ${name} is not allowed to delete On ${name}`
+      })
+    }else {
+      let deletedRoutine = await destroyRoutine (routineId);
+      if (!deletedRoutine){
+        res.send({success: true, ...deletedRoutine})
+      }
+    }
+
+  }catch (error){
+    next(error)
+  }
+
 })
+
 
 // POST /api/routines/:routineId/activities
 router.post('/:routineId/activities', async(req, res, next) => {
