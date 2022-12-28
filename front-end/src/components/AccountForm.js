@@ -4,8 +4,7 @@ import react from "react";
 const AccountForm = () => {
     return (
         <>
-        <h1>Welcome To Account Form</h1>
-        <div>
+        <h1 className="centered ui header">Welcome To Account Form</h1>
         <form className="ui form">
            <h1 className="centered ui header">Login or Register</h1> 
            <div className="field">
@@ -33,7 +32,7 @@ const AccountForm = () => {
           Login or Register
         </button>
         </form>
-        </div>
+    
         </>
     )
 }

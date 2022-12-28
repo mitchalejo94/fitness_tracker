@@ -1,14 +1,13 @@
-import React, { useEffect, useState } from "react";
-import ReactDOM from "react-dom/client";
+import React from "react";
 import {Home, AccountForm, Activities, Routines, MyRoutines} from "./components"
-import { Route, Switch, Link, useHistory} from "react-router-dom";
+import { Route, Switch, Link} from "react-router-dom";
 
 const App = () => {
     return (
     <div>
         
       <nav className="ui horizontal menu">
-        <div class="item">
+        <div className="item">
         <Link className="header" to="/">
            Fitness Tracker
         </Link>

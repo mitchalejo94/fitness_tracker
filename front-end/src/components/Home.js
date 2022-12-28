@@ -4,7 +4,9 @@ import react from "react";
 const Home = () => {
     return (
         <>
-        <h1>Welcome Home</h1>
+        <div className="ui container">
+        <h1 className="centered ui header">Welcome Home</h1>
+        </div>
         </>
     )
 }

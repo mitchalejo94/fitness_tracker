@@ -4,7 +4,7 @@ import react from "react";
 const Routines = () => {
     return (
         <>
-        <h1>Routines</h1>
+        <h1 className="centered ui header">Routines</h1>
         </>
     )
 }

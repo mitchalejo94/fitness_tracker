@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 const Activities = () => {
     return (
         <>
-        <h1>Welcome To Activities</h1>
+        <h1 className="centered ui header">Activities</h1>
         </>
     )
 }
