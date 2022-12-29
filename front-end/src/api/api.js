@@ -1,4 +1,6 @@
- const URL = "https://fitnesstrac-kr.herokuapp.com/";
+const { post } = require("../../../api/routines");
+
+ const URL = "https://fitnesstrac-kr.herokuapp.com/api";
 
  const makeHeaders = (token)=>{
     const headers = {
@@ -27,3 +29,31 @@
 
     return result
  }
+
+ export const fetchActivities = async (token)=>{
+    try{
+        const {success, error, activities } = await callAPI ('/activities',{
+            token:token
+        })
+        if(success){
+            return{
+                error:null,
+                posts: activities
+            }
+        }else{
+            return{
+                error:error.message,
+                posts:[]
+            }
+        }
+    }catch(error){
+        console.error("Error fetching activities", error);
+
+        return{
+            error: 'Failed to load activities',
+            posts: []
+
+        }
+    }
+ }
+
