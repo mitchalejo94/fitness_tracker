@@ -7,6 +7,14 @@ const Activities = ({activities}) => {
     return (
         <>
         <h1 className="centered ui header">Activities</h1>
+        {activities.map((individualActivity)=> {
+            return( 
+                <>
+                    <h3>{individualActivity.name}</h3>
+                    <p>{individualActivity.description}</p>
+                </>
+            )
+        })}
         </>
     )
 }
