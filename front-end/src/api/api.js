@@ -43,6 +43,25 @@
     }
  }
  
+ export const registerUser = async (username, password) => {
+    try{
+        const response = await fetch(`${URL}/users/register`, {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                username,
+                password,
+            })
+        })
+        const result = await response.json()
+        console.log("result.....", result)
+        return result
+    }catch(error) {
+        console.error("There was an error registering the user", error)
+    }
+ }
 
 //  export const fetchActivities = async ()=>{
 //     try{
