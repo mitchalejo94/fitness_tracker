@@ -9,11 +9,12 @@ const [token, ] = useState(window.localStorage.getItem("token")||null)
 
 useEffect(() => {
     const getActivities = async () => {
-        const {error, activities} = await fetchActivities(token);
-        if (error) {
-            console.error(error);
-        }
+        const activities = await fetchActivities();
+        // if (error) {
+        //     console.error(error);
+        // }
         setActivities(activities);
+        console.log('HEREEEEE is activities', activities)
     };
     getActivities();
 }, []);
