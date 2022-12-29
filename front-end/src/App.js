@@ -1,8 +1,24 @@
-import React from "react";
+import React, {useState, useEffect} from "react";
 import {Home, AccountForm, Activities, Routines, MyRoutines} from "./components"
 import { Route, Switch, Link} from "react-router-dom";
+import { fetchActivities } from "./api/api";
 
 const App = () => {
+const [activities, setActivities] = useState ([])
+const [token, setToken ] = useState(window.localStorage.getItem("token")||null)
+
+useEffect(() => {
+    const getActivities = async () => {
+        const activities = await fetchActivities();
+        // if (error) {
+        //     console.error(error);
+        // }
+        setActivities(activities);
+        console.log('HEREEEEE is activities', activities)
+    };
+    getActivities();
+}, []);
+
     return (
     <div>
         
@@ -33,13 +49,13 @@ const App = () => {
         <Home />
     </Route>
     <Route path ="/accountform">
-        <AccountForm/>
+        <AccountForm setToken={setToken} />
     </Route>
     <Route path ="/activities">
-        <Activities/>
+        <Activities activities={activities} token = {token} setActivities={setActivities}/>
     </Route>
     <Route path ="/routines">
-        <Routines/>
+        <Routines />
     </Route>  
     <Route path ="/myroutines">
         <MyRoutines/>
