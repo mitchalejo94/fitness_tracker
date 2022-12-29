@@ -1,4 +1,4 @@
-const { post } = require("../../../api/routines");
+// const { post } = require("../../../api/routines");
 
  const URL = "https://fitnesstrac-kr.herokuapp.com/api";
 
