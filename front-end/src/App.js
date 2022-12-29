@@ -5,7 +5,7 @@ import { fetchActivities } from "./api/api";
 
 const App = () => {
 const [activities, setActivities] = useState ([])
-const [token, ] = useState(window.localStorage.getItem("token")||null)
+const [token, setToken ] = useState(window.localStorage.getItem("token")||null)
 
 useEffect(() => {
     const getActivities = async () => {
@@ -49,7 +49,7 @@ useEffect(() => {
         <Home />
     </Route>
     <Route path ="/accountform">
-        <AccountForm/>
+        <AccountForm setToken={setToken} />
     </Route>
     <Route path ="/activities">
         <Activities activities={activities} token = {token} setActivities={setActivities}/>
