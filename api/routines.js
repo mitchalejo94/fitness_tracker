@@ -49,7 +49,7 @@ router.post("/", async (req, res, next) => {
 
 router.patch("/:routineId", async (req, res, next) => {
   if (!req.user)
-    res.status(403).send({
+    res.status(401).send({
       error: "You must be logged in to perform this action",
       message: "You must be logged in to perform this action",
       name: "InvalidCredentialsError",
@@ -174,16 +174,29 @@ router.patch("/:routineId", async (req, res, next) => {
 //   }
 // })
 
-const requireUser = (req,res,next)=>{
+// const requireUser = (req,res,next)=>{
+//   if(!req.user){
+//     res.statusCode = 403;
+//     next({
+//       name: 'MissingUserError',
+//       message: 'You must be logged in'
+//     })
+//   }
+//   next()
+// }
+
+const requireUser = (req, res,next)=>{
   if(!req.user){
-    res.statusCode = 403;
-    next({
-      name: 'MissingUserError',
-      message: 'You must be logged in'
+    res.status(403)
+    res.send({
+      error:"no user",
+      name: "MissingUserError",
+      message: "You must be logged in"
     })
   }
   next()
 }
+
 
 router.delete("/:routineId", requireUser, async (req, res, next) => {
   try {
