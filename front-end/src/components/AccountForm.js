@@ -9,20 +9,25 @@ const AccountForm = ({token, setToken}) => {
   
   const handleSubmit = async(username, password) => {
     if (!token) {
-      await registerUser(username, password)
+      const {user, message, token} = await registerUser(username, password)
       console.log("we are registering user")
-      
+      setToken(token)
+      alert(message)
+      return user
     } else {
-      await loginUser(username, password)
+      const {user, message, token} = await loginUser(username, password)
       console.log("We are logging in")
+      setToken(token)
+      alert(message)
+      return user
     }
     
     // const {user, message, token} = await registerUser(username, password)
     // setToken(token)
 
-    alert(message)
+    
     //'user' is an object with id and username
-    return user
+    
   }
 
   console.log("this is token", token)

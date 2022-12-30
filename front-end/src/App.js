@@ -27,6 +27,11 @@ useEffect(() => {
     }
 }, [token]);
 
+const logOut = () => {
+    setToken(null);
+    console.log("We are logged out")
+}
+
     return (
     <div>
         
@@ -46,9 +51,15 @@ useEffect(() => {
         </Link>
         </div>
         <div className="right menu">
-        <Link className="item" to="/accountform">
-            Login / Register
-        </Link>
+        <div className="item">
+            {token ? (
+                <button
+                    onClick={logOut} className="item">Log Out
+                </button>
+            ):  (
+                <Link className="item" to="/accountform">Log In / Register</Link>
+            )}
+        </div>
         </div>
       </nav>
       
