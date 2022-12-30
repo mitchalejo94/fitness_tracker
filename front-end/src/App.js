@@ -5,7 +5,7 @@ import { fetchActivities } from "./api/api";
 
 const App = () => {
 const [activities, setActivities] = useState ([])
-const [token, setToken ] = useState(window.localStorage.getItem("token")||null)
+const [token, setToken ] = useState(window.localStorage.getItem("token") || null)
 
 useEffect(() => {
     const getActivities = async () => {
@@ -18,6 +18,14 @@ useEffect(() => {
     };
     getActivities();
 }, []);
+
+useEffect(() => {
+    if (token) {
+        window.localStorage.setItem("token", token);
+    } else {
+        window.localStorage.removeItem("token");
+    }
+}, [token]);
 
     return (
     <div>
@@ -49,7 +57,7 @@ useEffect(() => {
         <Home />
     </Route>
     <Route path ="/accountform">
-        <AccountForm setToken={setToken} />
+        <AccountForm token={token} setToken={setToken} />
     </Route>
     <Route path ="/activities">
         <Activities activities={activities} token = {token} setActivities={setActivities}/>

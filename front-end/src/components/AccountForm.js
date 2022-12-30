@@ -1,22 +1,32 @@
 import React, {useState} from "react";
 import {registerUser} from "../api/api";
+import loginUser  from "../api/api";
 
 
-const AccountForm = ({setToken}) => {
+const AccountForm = ({token, setToken}) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   
   const handleSubmit = async(username, password) => {
-  
-    console.log(username, "here is username")
-    console.log(password, "here is password")
-    const {user, message, token} = await registerUser(username, password)
-    setToken(token)
+    if (!token) {
+      await registerUser(username, password)
+      console.log("we are registering user")
+      
+    } else {
+      await loginUser(username, password)
+      console.log("We are logging in")
+    }
+    
+    // const {user, message, token} = await registerUser(username, password)
+    // setToken(token)
 
     alert(message)
     //'user' is an object with id and username
     return user
   }
+
+  console.log("this is token", token)
+  const buttonCheck = !token ? "register" : "login"
     return (
         <>
         <h1 className="centered ui header">Welcome To Account Form</h1>
@@ -48,7 +58,7 @@ const AccountForm = ({setToken}) => {
           />
         </div>
         <button className="ui button" type="submit">
-          Login or Register
+        {buttonCheck}
         </button>
         </form>
     
