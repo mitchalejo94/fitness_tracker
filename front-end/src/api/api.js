@@ -63,6 +63,25 @@
     }
  }
 
+ export const loginUser = async (username, password) => {
+    try {
+        const response = await fetch(`${URL}/users/login`, {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                username,
+                password,
+            })
+        })
+        const result = await response.json()
+        return result
+    } catch (error) {
+        console.error("There was an error logging in the user", error)
+    }
+ }
+
 //  export const fetchActivities = async ()=>{
 //     try{
 //         const {success, error, activities } = await callAPI ('/activities',{
@@ -89,4 +108,4 @@
 //         }
 //     }
 //  }
-
+export default loginUser
