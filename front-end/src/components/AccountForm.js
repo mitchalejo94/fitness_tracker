@@ -33,12 +33,16 @@ const AccountForm = ({token, setToken, setUser}) => {
     console.log("We are returning", returningUser);
     setUser(returningUser.username)
     setToken(returningUser.token)
+    setUsername("")
+    setPassword("")
   }
   const handleRegister = async(username, password) => {
     const newUser = await registerUser(username, password)
     console.log("We are new user", newUser);
     setUser(newUser.username)
     setToken(newUser.token)
+    setUsername("")
+    setPassword("")
   }
 
   // console.log("this is token", token)

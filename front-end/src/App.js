@@ -35,7 +35,7 @@ useEffect(() => {
     if (token) {
         console.log('TOKEN true', typeof(token))
 
-        window.localStorage.setItem('token', token);
+        window.localStorage.setItem("token", token);
       } else {
         console.log('TOKEN false', typeof(token))
 
@@ -69,11 +69,11 @@ const LogOut = ({setToken}) => {
         </Link>
         </div>
         <div className="right menu">
-        <Link className="item" to="/accountform">
+        {!token ? (<Link className="item" to="/accountform">
             Login / Register
-        </Link>
+        </Link>) : null}
 
-            <LogOut setToken={setToken} className="item"/>
+        {token ? (<LogOut setToken={setToken} className="item"/>) : null}
 
         </div>
       </nav>
