@@ -6,26 +6,34 @@ import loginUser  from "../api/api";
 const AccountForm = ({token, setToken}) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+
+
   
   const handleSubmit = async(username, password) => {
-    if (!token) {
-      await registerUser(username, password)
-      console.log("we are registering user")
-      
+    if (token) {
+      const newUser = await registerUser(username, password)
+      console.log("we are registering user", newUser);
+      setToken(newUser.token);
+      // alert(newUser.message);
+
     } else {
-      await loginUser(username, password)
-      console.log("We are logging in")
+      const returningUser = await loginUser(username, password)
+      console.log("We are logging in", returningUser)
+      setToken(returningUser.token)
     }
+
+    setPassword("");
+    setUsername("");
     
     // const {user, message, token} = await registerUser(username, password)
     // setToken(token)
 
-    alert(message)
+    // alert(message)
     //'user' is an object with id and username
-    return user
+    // return user
   }
 
-  console.log("this is token", token)
+  // console.log("this is token", token)
   const buttonCheck = !token ? "register" : "login"
     return (
         <>

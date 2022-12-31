@@ -63,24 +63,27 @@
     }
  }
 
- export const loginUser = async (username, password) => {
+ export const loginUser = async(username, password) => {
     try {
-        const response = await fetch(`${URL}/users/login`, {
+        let response = await fetch(`${URL}/users/login`, {
             method: "POST",
             headers: {
-                'Content-Type': 'application/json'
+              'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                username,
-                password,
+              
+                username: username,
+                password: password
+              
             })
-        })
-        const result = await response.json()
-        return result
+            }).then(result => result.json())
+        console.log("THIS IS LOGGING IN", response)
+
+        return response
     } catch (error) {
-        console.error("There was an error logging in the user", error)
+        console.log('error loggin back in: ', error);
     }
- }
+}
 
 //  export const fetchActivities = async ()=>{
 //     try{

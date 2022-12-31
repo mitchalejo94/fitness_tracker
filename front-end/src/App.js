@@ -5,7 +5,7 @@ import { fetchActivities } from "./api/api";
 
 const App = () => {
 const [activities, setActivities] = useState ([])
-const [token, setToken ] = useState(window.localStorage.getItem("token") || null)
+const [token, setToken] = useState(window.localStorage.getItem("token"||""));
 
 useEffect(() => {
     const getActivities = async () => {
@@ -14,18 +14,23 @@ useEffect(() => {
         //     console.error(error);
         // }
         setActivities(activities);
-        console.log('HEREEEEE is activities', activities)
+        // console.log('HEREEEEE is activities', activities)
     };
     getActivities();
 }, []);
 
+// this useEffect sets the items state every time our token value changes
 useEffect(() => {
-    if (token) {
-        window.localStorage.setItem("token", token);
-    } else {
-        window.localStorage.removeItem("token");
-    }
-}, [token]);
+    window.localStorage.setItem("token", token) // key value pair
+    console.log('token in index useEffect', token)
+    }, [token]);
+
+// this is our logout button
+const LogOut = ({setToken}) => {
+    return (
+        <button className="item" onClick={() => {setToken("")} }><a>Log out</a></button> 
+    )
+}
 
     return (
     <div>
@@ -49,6 +54,9 @@ useEffect(() => {
         <Link className="item" to="/accountform">
             Login / Register
         </Link>
+
+            <LogOut setToken={setToken} className="item"/>
+
         </div>
       </nav>
       
