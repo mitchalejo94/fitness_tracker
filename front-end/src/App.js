@@ -7,6 +7,9 @@ const App = () => {
 const [activities, setActivities] = useState ([])
 const [token, setToken ] = useState(window.localStorage.getItem("token") || null)
 
+// set user to
+const [user, setUser] = useState(false);
+
 useEffect(() => {
     const getActivities = async () => {
         const activities = await fetchActivities();
@@ -21,11 +24,18 @@ useEffect(() => {
 
 useEffect(() => {
     if (token) {
-        window.localStorage.setItem("token", token);
+      window.localStorage.setItem('token', token);
     } else {
-        window.localStorage.removeItem("token");
+      window.localStorage.removeItem('token');
     }
-}, [token]);
+  }, [token]);
+
+  // this is our logout button
+const LogOut = ({setToken}) => {
+    return (
+        <button className="item" onClick={() => {setToken("")} }><a>Log out</a></button> 
+    )
+}
 
     return (
     <div>
@@ -46,9 +56,10 @@ useEffect(() => {
         </Link>
         </div>
         <div className="right menu">
-        <Link className="item" to="/accountform">
+        {!token ? (<Link className="item" to="/accountform">
             Login / Register
-        </Link>
+        </Link>) : null}
+        {token ? (<LogOut setToken={setToken} className="item"/>) : null}
         </div>
       </nav>
       
@@ -57,7 +68,7 @@ useEffect(() => {
         <Home />
     </Route>
     <Route path ="/accountform">
-        <AccountForm token={token} setToken={setToken} />
+        <AccountForm token={token} setToken={setToken} setUser={setUser} />
     </Route>
     <Route path ="/activities">
         <Activities activities={activities} token = {token} setActivities={setActivities}/>
