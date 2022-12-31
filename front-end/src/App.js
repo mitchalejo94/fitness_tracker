@@ -4,8 +4,14 @@ import { Route, Switch, Link} from "react-router-dom";
 import { fetchActivities } from "./api/api";
 
 const App = () => {
-const [activities, setActivities] = useState ([])
-const [token, setToken] = useState(window.localStorage.getItem("token"||""));
+const [activities, setActivities] = useState ([]);
+// get token from local storage
+// const [token, setToken] = useState(window.localStorage.getItem("token"||""));
+const [token, setToken] = useState(
+    window.localStorage.getItem('token') || null
+  );
+// set user to 
+const [user, setUser] = useState(false);
 
 useEffect(() => {
     const getActivities = async () => {
@@ -20,9 +26,21 @@ useEffect(() => {
 }, []);
 
 // this useEffect sets the items state every time our token value changes
+// useEffect(() => {
+//     window.localStorage.setItem("token", token) // key value pair
+//     console.log('token in index useEffect', token)
+//     }, [token]);
+
 useEffect(() => {
-    window.localStorage.setItem("token", token) // key value pair
-    console.log('token in index useEffect', token)
+    if (token) {
+        console.log('TOKEN true', typeof(token))
+
+        window.localStorage.setItem('token', token);
+      } else {
+        console.log('TOKEN false', typeof(token))
+
+        window.localStorage.removeItem('token');
+      }
     }, [token]);
 
 // this is our logout button
@@ -65,7 +83,7 @@ const LogOut = ({setToken}) => {
         <Home />
     </Route>
     <Route path ="/accountform">
-        <AccountForm token={token} setToken={setToken} />
+        <AccountForm token={token} setToken={setToken} setUser={setUser}/>
     </Route>
     <Route path ="/activities">
         <Activities activities={activities} token = {token} setActivities={setActivities}/>

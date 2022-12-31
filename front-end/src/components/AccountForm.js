@@ -3,46 +3,52 @@ import {registerUser} from "../api/api";
 import loginUser  from "../api/api";
 
 
-const AccountForm = ({token, setToken}) => {
+const AccountForm = ({token, setToken, setUser}) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
 
   
-  const handleSubmit = async(username, password) => {
-    if (token) {
-      const newUser = await registerUser(username, password)
-      console.log("we are registering user", newUser);
-      setToken(newUser.token);
-      // alert(newUser.message);
+  // const handleSubmit = async(username, password) => {
+  //   if (!token) {
+  //     const newUser = await registerUser(username, password)
+  //     console.log("we are registering user", newUser);
+  //     setUser(newUser.username)
+  //     setToken(newUser.token);
+  //     // alert(newUser.message);
 
-    } else {
-      const returningUser = await loginUser(username, password)
-      console.log("We are logging in", returningUser)
-      setToken(returningUser.token)
-    }
+  //   } else {
+  //     const returningUser = await loginUser(username, password)
+  //     console.log("We are logging in", returningUser);
+  //     setUser(returningUser.username)
+  //     setToken(returningUser.token)
+  //   }
 
-    setPassword("");
-    setUsername("");
-    
-    // const {user, message, token} = await registerUser(username, password)
-    // setToken(token)
+  //   setPassword("");
+  //   setUsername("");
+  // }
 
-    // alert(message)
-    //'user' is an object with id and username
-    // return user
+  const handleLogin = async(username, password) => {
+    const returningUser = await loginUser(username, password)
+    console.log("We are returning", returningUser);
+    setUser(returningUser.username)
+    setToken(returningUser.token)
+  }
+  const handleRegister = async(username, password) => {
+    const newUser = await registerUser(username, password)
+    console.log("We are new user", newUser);
+    setUser(newUser.username)
+    setToken(newUser.token)
   }
 
   // console.log("this is token", token)
-  const buttonCheck = !token ? "register" : "login"
+  // const buttonCheck = !token ? "register" : "login"
     return (
         <>
         <h1 className="centered ui header">Welcome To Account Form</h1>
         <form className="ui form"
-        onSubmit={(event)=>{
-          event.preventDefault();
-          handleSubmit(username, password)
-        }}>
+        onSubmit={(event) => {event.preventDefault()}}
+        >
            <h1 className="centered ui header">Login or Register</h1> 
            <div className="field">
           <label>Username</label>
@@ -65,8 +71,17 @@ const AccountForm = ({token, setToken}) => {
             onChange={(event) => setPassword(event.target.value)}
           />
         </div>
-        <button className="ui button" type="submit">
-        {buttonCheck}
+        <button className="ui button" type="submit" onClick={()=>{
+
+          handleRegister(username, password)
+        }}>
+        register
+        </button>
+        <button className="ui button" type="submit" onClick={() => {
+
+          handleLogin(username, password)
+        }}>
+        login
         </button>
         </form>
     
