@@ -79,6 +79,24 @@
         return result
     } catch (error) {
         console.error("There was an error logging in the user", error)
+        throw error;
+    }
+ }
+
+ export const fetchUser = async (token) => {
+    // console.log('token in fetchuser: ', token)
+    try {
+        const response = await fetch(`${URL}/users/me`, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            }).then(response => response.json());
+            // console.log('this is fetch response: ', response);
+            return response;
+    } catch (error) {
+        console.log('there was an error fetching the user: ', error);
+        throw error;
     }
  }
 
