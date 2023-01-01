@@ -43,27 +43,6 @@
     }
  };
 
- /* export const createActivity = async(name, description, token) => {
-    try {
-        const response = await fetch(`${URL}/activities`, {
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                name,
-                description,
-            })
-        })
-        const result = await response.json()
-        console.log("result.....", result)
-        return result
-    } catch ( error) {
-        console.error ("There was an error creating the activity", error)
-    }
-
-    */
-
 
  
  export const registerUser = async (username, password) => {
