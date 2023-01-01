@@ -42,6 +42,8 @@
         console.error ("There was an error fetching the activities", error)
     }
  }
+
+
  
  export const registerUser = async (username, password) => {
     try{
