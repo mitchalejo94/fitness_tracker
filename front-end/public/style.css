@@ -8,3 +8,16 @@ body {
 
 }
 
+.ui.card.centered{
+    padding: 1rem;
+
+}
+
+.goal {
+    font-weight: bold;
+}
+
+.card.header {
+    color: #4183c4
+}
+
