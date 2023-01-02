@@ -14,10 +14,10 @@ const Home = ({token}) => {
         <>
         <div className="ui container">
         <h1 className="centered ui header">Welcome Home</h1>
-        {token ?
+        {token ? 
             // (`You are logged in as ${data.username}`)
             console.log('you are logged in')
-        :
+        : 
             (<p>You are not logged in.</p>)}
         </div>
         </>
