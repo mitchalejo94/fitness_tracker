@@ -1,5 +1,6 @@
 // const { post } = require("../../../api/routines");
 
+
  const URL = "https://fitnesstrac-kr.herokuapp.com/api";
 
 //  const makeHeaders = (token)=>{
@@ -41,7 +42,9 @@
     } catch ( error) {
         console.error ("There was an error fetching the activities", error)
     }
- }
+ };
+
+
  
  export const registerUser = async (username, password) => {
     try{
@@ -97,6 +100,34 @@
     } catch (error) {
         console.log('there was an error fetching the user: ', error);
         throw error;
+    }
+ }
+
+ export const createActivities = async (  name, description, token) => {
+    try {
+        const response = await fetch(`${URL}/activities`,
+        {
+             
+            method: "POST",
+            headers:{
+                'Content-Type': 'application/json',
+                'Authorization':`Bearer ${token}`
+            },
+            body: JSON.stringify({
+                name,
+                description,
+                token,
+        
+            })
+        })
+        const result = await response.json()
+        console.log(token, "api token");
+        console.log(name, "API NAME");
+        console.log(description, 'API DESCRIPTION');
+        console.log("createActivities api call result:", result)
+        return result
+    } catch (error) {
+        console.error("There was an error creating a new activity", error)
     }
  }
 
