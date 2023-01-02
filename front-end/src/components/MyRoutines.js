@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { fetchRoutines, postRoutine, patchRoutine } from "../api/api";
+import { fetchRoutines, postRoutine, patchRoutine, deleteRoutine } from "../api/api";
 
 
 const MyRoutines = ({username, token}) => {
@@ -16,7 +16,7 @@ const MyRoutines = ({username, token}) => {
             // console.log('data here: ', data)
         }
         gathering(username, token)
-    },[])
+    },[routines])
 
     const handleCreateNewRoutine = async (name, goal, visability) => {
         // console.log(`your private (${visability}) routine is ${name} until ${goal}`);
@@ -24,7 +24,13 @@ const MyRoutines = ({username, token}) => {
         setRoutines((previousRoutines) => [...previousRoutines, newRoutine]);
         // setAddContact((prevContact) => [...prevContact, inputValue]);
         return newRoutine;
-        
+    }
+
+    const handleRoutineDelete = async (routineId) => {
+        // console.log(`are you sure you want to delete ${routineId}`);
+        const youSureYouWantToDeleteThis = await deleteRoutine(routineId, token)
+        // console.log('youSureYouWantToDeleteThis', youSureYouWantToDeleteThis);
+        return youSureYouWantToDeleteThis;
     }
 
     const EditRoutineForm = ({routine}) => {
@@ -143,6 +149,7 @@ const MyRoutines = ({username, token}) => {
                         <h4>{eachRoutine.name}</h4>
                         <p>{eachRoutine.goal}</p>
                         {edit ? (<EditRoutineForm routine={eachRoutine} />) : null}
+                        <button onClick={() => handleRoutineDelete(eachRoutine.id)}>Delete this routine</button>
                     </div>
                 )
             })

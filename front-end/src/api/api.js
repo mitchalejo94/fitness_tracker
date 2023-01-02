@@ -176,6 +176,25 @@ export const patchRoutine = async (name, goal, isPublic, token, routineId) => {
     }
 }
 
+// this api call will hard delete a routine from the database
+export const deleteRoutine = async (routineId, token) => {
+    try {
+        const gatheringData = await fetch(`${URL}/routines/${routineId}`, {
+            method: "DELETE",
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            }
+        });
+        const deletedRoutine = await gatheringData.json();
+        console.log('this routine was delete: ', deletedRoutine);
+        return deletedRoutine;
+    } catch (error) {
+        console.log('there was an error deleting a routine: ', error);
+        throw error;
+    }
+}
+
 //  export const fetchActivities = async ()=>{
 //     try{
 //         const {success, error, activities } = await callAPI ('/activities',{
