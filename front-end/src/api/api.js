@@ -84,6 +84,24 @@
     }
  }
 
+ export const createActivities = async (name, description) => {
+    try {
+        const response = await fetch(`${URL}/activities`,
+        {
+            method: "POST",
+            body: JSON.stringify({
+                name,
+                description
+            })
+        })
+        const result = await response.json()
+        console.log("Where is this", result)
+        return result
+    } catch (error) {
+        console.error("There was an error creating a new activity", error)
+    }
+ }
+
 //  export const fetchActivities = async ()=>{
 //     try{
 //         const {success, error, activities } = await callAPI ('/activities',{
