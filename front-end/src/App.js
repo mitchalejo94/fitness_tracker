@@ -76,7 +76,7 @@ const LogOut = ({setToken}) => {
         <Routines />
     </Route>  
     <Route path ="/myroutines">
-        <MyRoutines username={user} token={token}/>
+        <MyRoutines username={user} token={token} activities={activities}/>
     </Route>
 </Switch>
     </div>

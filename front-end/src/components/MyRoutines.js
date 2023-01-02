@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { fetchRoutines, postRoutine, patchRoutine, deleteRoutine } from "../api/api";
 
 
-const MyRoutines = ({username, token}) => {
+const MyRoutines = ({username, token, activities}) => {
     // console.log('username here: ', username);
     // console.log('token here? :', token)
 
@@ -132,6 +132,11 @@ const MyRoutines = ({username, token}) => {
             </>
         )
     }
+
+    const handleAddActivity = () => {
+        console.log('event? ')
+    }
+
     
     return (
         <>
@@ -148,7 +153,22 @@ const MyRoutines = ({username, token}) => {
                     <div key={eachRoutine.id}>
                         <h4>{eachRoutine.name}</h4>
                         <p>{eachRoutine.goal}</p>
-                        {edit ? (<EditRoutineForm routine={eachRoutine} />) : null}
+                        {edit ? (<EditRoutineForm routine={eachRoutine} />) : null} 
+                        <form onSubmit={(event) => {
+                            event.preventDefault();
+                        }}>
+                            <label htmlFor="add-activities">Add activities</label>
+                            <select name="add-activities">
+                            <option disabled>Pick an Activity</option>
+                            {activities.map((activity) => {
+                                return (
+                                    <option key={activity.id} value={activity.id} >{activity.name}</option>
+                                )
+                            })}
+                            </select>
+                            <button onClick={(event) => {handleAddActivity()}} type="submit">Add activity</button>
+                        </form> 
+                        
                         <button onClick={() => handleRoutineDelete(eachRoutine.id)}>Delete this routine</button>
                     </div>
                 )
@@ -157,9 +177,6 @@ const MyRoutines = ({username, token}) => {
         </>
     )
 }
-
-
-
 
 
 export default MyRoutines;
