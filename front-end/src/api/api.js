@@ -1,6 +1,6 @@
 // const { post } = require("../../../api/routines");
 
- const URL = "https://fitnesstrac-kr.herokuapp.com/api";
+const URL = "https://fitnesstrac-kr.herokuapp.com/api";
 
 //  const makeHeaders = (token)=>{
 //     const headers = {
@@ -14,15 +14,15 @@
 
 //  const callAPI = async (endpointPath, defaultOptions = {}) =>{
 //     const {token, method, body} = defaultOptions;
-    
+
 //     const options = {
 //         headers: makeHeaders(token)
 //     }
 //     if(method){
-//         options.method = method 
+//         options.method = method
 //     }
 //     if(body){
-//         options.body = JSON.stringify(body)   
+//         options.body = JSON.stringify(body)
 //     }
 //     const response = await fetch (`${URL}${endpointPath}`, options)
 //     const result = await response.json()
@@ -30,70 +30,89 @@
 //     return result
 //  }
 
- export const fetchActivities = async() => {
-    try {
-        const response = await fetch(`${URL}/activities`, {
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          }).then(response => response.json()) 
-            return response
-    } catch ( error) {
-        console.error ("There was an error fetching the activities", error)
-    }
- }
+export const fetchActivities = async () => {
+  try {
+    const response = await fetch(`${URL}/activities`, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }).then((response) => response.json());
+    return response;
+  } catch (error) {
+    console.error("There was an error fetching the activities", error);
+  }
+};
 
- export const fetchRoutines = async() => {
-    try {
-        const response = await fetch(`${URL}/routines`, {
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          }).then(response => response.json()) 
-            return response
-    } catch ( error) {
-        console.error ("There was an error fetching the routines", error)
-    }
- }
- 
- export const registerUser = async (username, password) => {
-    try{
-        const response = await fetch(`${URL}/users/register`, {
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                username,
-                password,
-            })
-        })
-        const result = await response.json()
-        console.log("result.....", result)
-        return result
-    }catch(error) {
-        console.error("There was an error registering the user", error)
-    }
- }
+export const fetchRoutines = async () => {
+  try {
+    const response = await fetch(`${URL}/routines`, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }).then((response) => response.json());
+    return response;
+  } catch (error) {
+    console.error("There was an error fetching the routines", error);
+  }
+};
 
- export const loginUser = async (username, password) => {
-    try {
-        const response = await fetch(`${URL}/users/login`, {
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                username,
-                password,
-            })
-        })
-        const result = await response.json()
-        return result
-    } catch (error) {
-        console.error("There was an error logging in the user", error)
-    }
- }
+export const registerUser = async (username, password) => {
+  try {
+    const response = await fetch(`${URL}/users/register`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        username,
+        password,
+      }),
+    });
+    const result = await response.json();
+    console.log("result.....", result);
+    return result;
+  } catch (error) {
+    console.error("There was an error registering the user", error);
+  }
+};
+
+export const loginUser = async (username, password) => {
+  try {
+    const response = await fetch(`${URL}/users/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        username,
+        password,
+      }),
+    });
+    const result = await response.json();
+    return result;
+  } catch (error) {
+    console.error("There was an error logging in the user", error);
+  }
+};
+
+export const createRoutine = async (name, goal, isPublic, token) => {
+  try {
+    const response = await fetch(`${URL}/routines`, {
+      method: "POST",
+      body: JSON.stringify({
+        name,
+        goal,
+        isPublic,
+        token,
+      }),
+    });
+    const result = await response.json();
+    console.log("createRoutine result", result);
+    return result;
+  } catch (error) {
+    console.log("There was an error creating a new routine", error);
+  }
+};
 
 //  export const fetchActivities = async ()=>{
 //     try{
@@ -121,4 +140,4 @@
 //         }
 //     }
 //  }
-export default loginUser
+export default loginUser;

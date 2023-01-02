@@ -1,6 +1,13 @@
-import react from "react";
+import react, { useState } from "react";
+import { useHistory } from "react-router-dom";
+import { createRoutine } from "../api/api";
 
 const Routines = ({ routines, token }) => {
+  const [name, setName] = useState("");
+  const [goal, setGoal] = useState("");
+  const [isPublic, setIsPublic] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
+
   return (
     <>
       <h1 className="centered ui header">Routines</h1>
@@ -10,14 +17,66 @@ const Routines = ({ routines, token }) => {
           <div className="ui card centered">
             <div className="content">
               <div className="header">CREATE ROUTINE</div>
-              <form class="ui form">
+              <form
+                class="ui form"
+                onSubmit={async (event) => {
+                  event.preventDefault();
+
+                  const { error, routine } = await createRoutine(
+                    name,
+                    goal,
+                    isPublic,
+                    token
+                  );
+
+                  console.log("Routinestoken", token);
+
+                  if (routine) {
+                    console.log("post", routine);
+                    setName("");
+                    setGoal("");
+                    setIsPublic("");
+                    history.push("/posts");
+                  } else {
+                    setErrorMessage(error);
+                  }
+                }}
+              >
                 <div class="field">
                   <label>Routine Name</label>
-                  <input placeholder="Routine Name" />
+                  <input
+                    placeholder="Routine Name"
+                    type="text"
+                    className="field"
+                    placeholder="Title"
+                    required
+                    autoComplete="off"
+                    value={name}
+                    onChange={(event) => {
+                      setName(event.target.value);
+                    }}
+                  />
                 </div>
                 <div class="field">
-                  <label>Routine Description</label>
-                  <input placeholder="Activity Description" />
+                  <label>Routine Goal</label>
+                  <input
+                    placeholder="Routine Goal"
+                    required
+                    autoComplete="off"
+                    value={goal}
+                    onChange={(event) => {
+                      setGoal(event.target.value);
+                    }}
+                  />
+                </div>
+                <div class="ui checkbox">
+                  <input
+                    type="checkbox"
+                    onChange={(event) => {
+                      setIsPublic(true);
+                    }}
+                  />
+                  <label>Make my routine public</label>
                 </div>
                 <div class="field"></div>
                 <button class="ui button" type="submit">
