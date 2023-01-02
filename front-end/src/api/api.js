@@ -129,7 +129,7 @@
  // this function lets us make a new routine
  export const postRoutine = async(name, goal, visability, token) => {
     try {
-        console.log('our info inside the post method: ', name, goal, visability, token)
+        // console.log('our info inside the post method: ', name, goal, visability, token)
         const gatheringData = await fetch(`${URL}/routines`, {
             method: "POST",
             headers: {

@@ -3,8 +3,8 @@ import { fetchRoutines, postRoutine } from "../api/api";
 
 
 const MyRoutines = ({username, token}) => {
-    console.log('username here: ', username);
-    console.log('token here? :', token)
+    // console.log('username here: ', username);
+    // console.log('token here? :', token)
 
     const [routines, setRoutines] = useState([]);
 
@@ -12,15 +12,18 @@ const MyRoutines = ({username, token}) => {
         const gathering = async(username, token) => {
             const data = await fetchRoutines(username, token);
             setRoutines(data);
-            console.log('data here: ', data)
+            // console.log('data here: ', data)
         }
         gathering(username, token)
     },[])
 
     const handleCreateNewRoutine = async (name, goal, visability) => {
-        console.log(`your private (${visability}) routine is ${name} until ${goal}`);
+        // console.log(`your private (${visability}) routine is ${name} until ${goal}`);
         const newRoutine = await postRoutine(name, goal, visability, token);
+        setRoutines((previousRoutines) => [...previousRoutines, newRoutine]);
+        // setAddContact((prevContact) => [...prevContact, inputValue]);
         return newRoutine;
+        
     }
 
     const NewRoutineForm = () => {
@@ -75,9 +78,9 @@ const MyRoutines = ({username, token}) => {
         ? (<p>You dont have any routines to display!</p>)
         : (
             routines.map((eachRoutine) => {
-                console.log('each routine', eachRoutine)
+                // console.log('each routine', eachRoutine)
                 return (
-                    <div>
+                    <div key={eachRoutine.id}>
                         <h4>{eachRoutine.name}</h4>
                         <p>{eachRoutine.goal}</p>
                     </div>
