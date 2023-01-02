@@ -65,7 +65,7 @@ const LogOut = ({setToken}) => {
       
 <Switch>
     <Route exact path ="/">
-        <Home />
+        <Home/>
     </Route>
     <Route path ="/accountform">
         <AccountForm token={token} setToken={setToken} setUser={setUser} />
