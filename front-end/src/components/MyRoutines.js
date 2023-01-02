@@ -68,13 +68,20 @@ const MyRoutines = ({username, token}) => {
         // routine comes in as an object
         // creatorId, creatorName, goal, isPublic, name
 
-        console.log('name and such: ', name, goal, visability, routineId, token)
-
         // (name, goal, isPublic, token, routineId)
         const updatedRoutine = await patchRoutine(name, goal, visability, token, routineId);
-        console.log('updated routine on page? ', updatedRoutine)
+        // console.log('updated routine on page? ', updatedRoutine)
         setEdit(false)
-        setRoutines((previousRoutines) => [...previousRoutines, updatedRoutine])
+
+        // <button onClick={() => {
+            // setArtists(
+            //     artists.filter(a =>
+            //       a.id !== artist.id
+            //     )
+            //   );
+            // }}>
+        const updatingState = routines.filter((routine => routine.id !== updatedRoutine.id));
+        setRoutines([...updatingState, updatedRoutine])
     }
 
     const NewRoutineForm = () => {
