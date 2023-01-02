@@ -1,10 +1,11 @@
 import React, {useState, useEffect} from "react";
 import {Home, AccountForm, Activities, Routines, MyRoutines} from "./components"
 import { Route, Switch, Link} from "react-router-dom";
-import { fetchActivities } from "./api/api";
+import { fetchActivities, fetchRoutines } from "./api/api";
 
 const App = () => {
 const [activities, setActivities] = useState ([])
+const [routines, setRoutines] = useState([])
 const [token, setToken ] = useState(window.localStorage.getItem("token") || null)
 
 // set user to
@@ -20,6 +21,18 @@ useEffect(() => {
         console.log('HEREEEEE is activities', activities)
     };
     getActivities();
+}, []);
+
+useEffect(() => {
+    const getRoutines = async () => {
+        const routines = await fetchRoutines();
+        // if (error) {
+        //     console.error(error);
+        // }
+        setRoutines(routines);
+        console.log('here is routines', routines)
+    };
+    getRoutines();
 }, []);
 
 useEffect(() => {
@@ -74,7 +87,7 @@ const LogOut = ({setToken}) => {
         <Activities activities={activities} token = {token} setActivities={setActivities}/>
     </Route>
     <Route path ="/routines">
-        <Routines />
+        <Routines routines={routines} setRoutines={setRoutines} token={token} />
     </Route>  
     <Route path ="/myroutines">
         <MyRoutines/>

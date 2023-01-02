@@ -42,6 +42,19 @@
         console.error ("There was an error fetching the activities", error)
     }
  }
+
+ export const fetchRoutines = async() => {
+    try {
+        const response = await fetch(`${URL}/routines`, {
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          }).then(response => response.json()) 
+            return response
+    } catch ( error) {
+        console.error ("There was an error fetching the routines", error)
+    }
+ }
  
  export const registerUser = async (username, password) => {
     try{
