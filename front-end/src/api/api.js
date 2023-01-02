@@ -1,5 +1,6 @@
 // const { post } = require("../../../api/routines");
 
+
  const URL = "https://fitnesstrac-kr.herokuapp.com/api";
 
 //  const makeHeaders = (token)=>{
@@ -84,14 +85,20 @@
     }
  }
 
- export const createActivities = async (name, description) => {
+ export const createActivities = async (token, name, description) => {
     try {
         const response = await fetch(`${URL}/activities`,
         {
+             
             method: "POST",
+            headers:{
+                'Content-Type': 'application/json',
+                'Authorization':`Bearer ${token}`
+            },
             body: JSON.stringify({
                 name,
-                description
+                description,
+        
             })
         })
         const result = await response.json()
