@@ -95,7 +95,7 @@
             })
         })
         const result = await response.json()
-        console.log("Where is this", result)
+        console.log("createActivities api call result:", result)
         return result
     } catch (error) {
         console.error("There was an error creating a new activity", error)

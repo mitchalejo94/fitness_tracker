@@ -14,7 +14,9 @@ const Activities = ({activities, token, setActivities}) => {
         
         {token ? <> <div className="ui card centered"><div className="content"><div className="header">CREATE ACTIVITY</div><form className="ui form" onSubmit={async(event) => {
             event.preventDefault();
+            
             const {activities} = await createActivities(token, name, description);
+            
 
             console.log("activity from onSubmit:", description)
 
