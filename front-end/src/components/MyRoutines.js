@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { fetchRoutines } from "../api/api";
+import { fetchRoutines, postRoutine } from "../api/api";
 
 
 const MyRoutines = ({username, token}) => {
@@ -17,19 +17,23 @@ const MyRoutines = ({username, token}) => {
         gathering(username, token)
     },[])
 
-    const handleCreateNewRoutine = (name, goal) => {
-        console.log(`your new routine is ${name} until ${goal}`)
+    const handleCreateNewRoutine = async (name, goal, visability) => {
+        console.log(`your private (${visability}) routine is ${name} until ${goal}`);
+        const newRoutine = await postRoutine(name, goal, visability, token);
+        return newRoutine;
     }
 
     const NewRoutineForm = () => {
         const [name, setName] = useState("");
         const [goal, setGoal] = useState("");
+        const [visability, setVisability] = useState(true) // sets public / private of routine
+        // default to public
 
         return (
             <>
                 <form onSubmit={(event) => {
                 event.preventDefault();
-                handleCreateNewRoutine(name, goal)
+                handleCreateNewRoutine(name, goal, visability)
                 setGoal("")
                 setName("")
                 }}>
@@ -49,6 +53,12 @@ const MyRoutines = ({username, token}) => {
                         required
                         onChange={(event) => setGoal(event.target.value)}
                     />
+                    <label>Check this box to make your routine private: </label>
+                    <input
+                        type="checkbox"
+                        value={visability}
+                        onChange={() => setVisability(!visability)}/>
+
                     <button type="submit">Create Routine</button>
                 </form>
                 
