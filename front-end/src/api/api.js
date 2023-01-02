@@ -100,6 +100,32 @@
     }
  }
 
+ export const fetchRoutines = async(username, token) => {
+    try {
+        if (token) { 
+            const response = await fetch(`${URL}/users/${username}/routines`, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            const routines = response.json();
+            return routines;
+        } else {
+            const response = await fetch(`${URL}/users/${username}/routines`, {
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            });
+            const routines = response.json();
+            return routines;
+        }
+    } catch (error) {
+        console.log('there was an error fetching routines: ', error);
+        throw error;
+    }
+ }
+
 //  export const fetchActivities = async ()=>{
 //     try{
 //         const {success, error, activities } = await callAPI ('/activities',{
