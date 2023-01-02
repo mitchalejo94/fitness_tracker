@@ -151,6 +151,31 @@
     }
 }
 
+// this function lets us PATCH a routine
+export const patchRoutine = async (name, goal, isPublic, token, routineId) => {
+    // PATCH /api/routines/:routineId
+    try {
+        const gatheringData = await fetch(`${URL}/routines/${routineId}`, {
+            method: "PATCH",
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({
+                name: name,
+                goal: goal,
+                isPublic: isPublic,
+            })
+        });
+
+        const editedRoutine = await gatheringData.json();
+        return editedRoutine;
+    } catch (error) {
+        console.log('there was an error patching a routine: ', error);
+        throw error;
+    }
+}
+
 //  export const fetchActivities = async ()=>{
 //     try{
 //         const {success, error, activities } = await callAPI ('/activities',{

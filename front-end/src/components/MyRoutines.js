@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { fetchRoutines, postRoutine } from "../api/api";
+import { fetchRoutines, postRoutine, patchRoutine } from "../api/api";
 
 
 const MyRoutines = ({username, token}) => {
@@ -7,6 +7,7 @@ const MyRoutines = ({username, token}) => {
     // console.log('token here? :', token)
 
     const [routines, setRoutines] = useState([]);
+    const [edit, setEdit] = useState(false);
 
     useEffect(() => {
         const gathering = async(username, token) => {
@@ -24,6 +25,56 @@ const MyRoutines = ({username, token}) => {
         // setAddContact((prevContact) => [...prevContact, inputValue]);
         return newRoutine;
         
+    }
+
+    const EditRoutineForm = ({routine}) => {
+        const [name, setName] = useState(routine.name);
+        const [goal, setGoal] = useState(routine.goal);
+        const [visability, setVisability] = useState(routine.visability);
+        // console.log('did we get teh edit routine? ', routine)
+        
+        return (
+            <>
+                <form onSubmit={(event) => {
+                event.preventDefault();
+                handleEditRoutine(name, goal, visability, routine.id)
+                }}>
+                    <label>Edit Routine Name</label>
+                    <input
+                        type="text"
+                        value={name}
+                        onChange={(event) => setName(event.target.value)}
+                    />
+                    <label>Edit Routine Goal</label>
+                    <input
+                        type="text"
+                        value={goal}
+                        onChange={(event) => setGoal(event.target.value)}
+                    />
+                    <label>Check this box to make your routine private: </label>
+                    <input
+                        type="checkbox"
+                        value={visability}
+                        onChange={() => setVisability(!visability)}/>
+
+                    <button type="submit">Submit Edited Routine</button>
+                </form>
+                
+            </>
+        )
+    }
+
+    const handleEditRoutine = async (name, goal, visability, routineId) => {
+        // routine comes in as an object
+        // creatorId, creatorName, goal, isPublic, name
+
+        console.log('name and such: ', name, goal, visability, routineId, token)
+
+        // (name, goal, isPublic, token, routineId)
+        const updatedRoutine = await patchRoutine(name, goal, visability, token, routineId);
+        console.log('updated routine on page? ', updatedRoutine)
+        setEdit(false)
+        setRoutines((previousRoutines) => [...previousRoutines, updatedRoutine])
     }
 
     const NewRoutineForm = () => {
@@ -67,13 +118,14 @@ const MyRoutines = ({username, token}) => {
                 
             </>
         )
-        
     }
     
     return (
         <>
         <h1 className="centered ui header">My Routines</h1>
         <NewRoutineForm />
+        <button onClick={() => setEdit(!edit)}>Edit Your Routines</button>
+        
         {routines.length < 1 
         ? (<p>You dont have any routines to display!</p>)
         : (
@@ -83,11 +135,11 @@ const MyRoutines = ({username, token}) => {
                     <div key={eachRoutine.id}>
                         <h4>{eachRoutine.name}</h4>
                         <p>{eachRoutine.goal}</p>
+                        {edit ? (<EditRoutineForm routine={eachRoutine} />) : null}
                     </div>
                 )
             })
         )}
-        
         </>
     )
 }
