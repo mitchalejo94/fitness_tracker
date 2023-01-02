@@ -14,6 +14,8 @@ const {
 
 const router = express.Router();
 
+const { jwt } = require('jsonwebtoken')
+
 // GET /api/routines
 router.get("/", async (req, res, next) => {
   try {
@@ -27,19 +29,32 @@ router.get("/", async (req, res, next) => {
 //TEST
 // POST /api/routines
 router.post("/", async (req, res, next) => {
-  if (!req.user)
-    res.status(403).send({
-      error: "You must be logged in to perform this action",
-      message: "You must be logged in to perform this action",
-      name: "InvalidCredentialsError",
-    });
+  console.log('request body: ', req.body)
+  console.log('request headers: ', req.headers)
+  console.log('request user: ', req.user)
+
+  // DO WE HAVE TO GET THE TOKEN FROM THE HEADERS TO CHECK IF SOMEONE IS LOGGED IN?
+
+  const token = req.headers.authorization.slice(7);
+  console.log('token', token)
+  const signedIn = jwt.verify(token);
+  console.log('signed in? ', signedIn)
+  // if (!req.user)
+  //   res.status(401).send({
+  //     error: "You must be logged in to perform this action",
+  //     message: "You must be logged in to perform this action",
+  //     name: "InvalidCredentialsError",
+  //   });
 
   try {
     const { isPublic, name, goal } = req.body;
     const creatorId = req.user.id;
+    console.log('creator id? : ', creatorId)
     const routineData = { creatorId, isPublic, name, goal };
     const newRoutine = await createRoutine(routineData);
+    console.log('new routine? : ', newRoutine)
     res.json(newRoutine);
+    res.send(newRoutine)
   } catch ({ name, message }) {
     next({ name, message });
   }

@@ -6,7 +6,6 @@ import { fetchActivities } from "./api/api";
 const App = () => {
 const [activities, setActivities] = useState ([])
 const [token, setToken ] = useState(window.localStorage.getItem("token") || null)
-
 // set user to
 const [user, setUser] = useState(false);
 
@@ -65,7 +64,7 @@ const LogOut = ({setToken}) => {
       
 <Switch>
     <Route exact path ="/">
-        <Home />
+        <Home token={token}/>
     </Route>
     <Route path ="/accountform">
         <AccountForm token={token} setToken={setToken} setUser={setUser} />

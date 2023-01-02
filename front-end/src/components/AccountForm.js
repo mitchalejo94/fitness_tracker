@@ -1,11 +1,13 @@
-import React, {useState} from "react";
+import React, {useState, } from "react";
 import {registerUser} from "../api/api";
 import loginUser  from "../api/api";
+import { useHistory } from "react-router-dom";
 
 
-const AccountForm = ({token, setToken, setUser}) => {
+const AccountForm = ({setToken, setUser}) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const history = useHistory();
   
   const handleLogin = async(username, password) => {
     const returningUser = await loginUser(username, password)
@@ -14,14 +16,20 @@ const AccountForm = ({token, setToken, setUser}) => {
     setToken(returningUser.token)
     setUsername("")
     setPassword("")
+    alert(returningUser.message);
+    history.push('/');
   }
   const handleRegister = async(username, password) => {
     const newUser = await registerUser(username, password)
     console.log("We are new user", newUser);
-    setUser(newUser.username)
-    setToken(newUser.token)
-    setUsername("")
-    setPassword("")
+    if (newUser) {
+      setUser(newUser.username)
+      setToken(newUser.token)
+      setUsername("")
+      setPassword("")
+      alert(newUser.message);
+      history.push('/')
+    }
   }
 
     return (
