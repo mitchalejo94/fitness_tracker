@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { createActivities, fetchActivities } from "../api/api";
 // import { Link } from "react-router-dom";
 //import { getAllActivities } from "../../../db/activities";
@@ -20,15 +20,14 @@ const Activities = ({ activities, token }) => {
   //   }, [token]);
 
   useEffect(() => {
-   
     const gathering = async (username) => {
       const data = await fetchActivities(username, token);
       setActivity(data);
       console.log(data, " - this is data ");
       console.log(token, "USEEFFECT TOKEN");
     };
-    gathering( activity, setActivity, token);
-  },[]);
+    gathering(activity, setActivity, token);
+  }, []);
 
   const handleCreateActivity = async (name, description) => {
     console.log(`this is name -${name} this is description - ${description}`);
@@ -41,56 +40,10 @@ const Activities = ({ activities, token }) => {
 
     return (
       <>
-        {
-          /* {token ? (
-      <>
-        {" "}
-        <div className="ui card centered">
-          <div className="content">
-            <div className="header">CREATE ACTIVITY</div>
-            <form
-              className="ui form"
-              onSubmit={async (event) => {
-                event.preventDefault();
-    
-                const { activities } = await createActivities(
-                  token,
-                  name,
-                  description
-                );
-    
-                console.log("activity from onSubmit:", description);
-    
-                // if(activities) {
-                //     setActivities((prevActivities) => [...prevActivities, activities]);
-                //     setName('');
-                //     setDescription('');
-                // } else {
-                //     console.error("Cannot make new activity");
-                // }
-              }}
-            >
-              <div className="field">
-                <label>Activity Name</label>
-                <input placeholder="Activity Name" />
-              </div>
-              <div className="field">
-                <label>Activity Description</label>
-                <input placeholder="Activity Description" />
-              </div>
-              <div className="field"></div>
-              <button className="ui button" type="submit">
-                Create Activity
-              </button>
-            </form>
-          </div>{" "}
-        </div>{" "}
-      </>
-    ) : null
-    } */
+        {token ? (
           <form
             onSubmit={(event) => {
-                console.log(token, "please work");
+              console.log(token, "please work");
               event.preventDefault();
               handleCreateActivity(name, description);
               setName("");
@@ -113,10 +66,11 @@ const Activities = ({ activities, token }) => {
               required
               onChange={(event) => setDescription(event.target.value)}
             />
-            
+
             <button type="submit">Create Activity</button>
           </form>
-        }
+        ) : null}
+        
       </>
     );
   };
