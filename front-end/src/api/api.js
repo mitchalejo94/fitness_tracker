@@ -85,7 +85,7 @@
     }
  }
 
- export const createActivities = async (token, name, description) => {
+ export const createActivities = async (  name, description, token) => {
     try {
         const response = await fetch(`${URL}/activities`,
         {
@@ -98,10 +98,14 @@
             body: JSON.stringify({
                 name,
                 description,
+                token,
         
             })
         })
         const result = await response.json()
+        console.log(token, "api token");
+        console.log(name, "API NAME");
+        console.log(description, 'API DESCRIPTION');
         console.log("createActivities api call result:", result)
         return result
     } catch (error) {

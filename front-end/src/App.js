@@ -71,7 +71,7 @@ const LogOut = ({setToken}) => {
         <AccountForm token={token} setToken={setToken} setUser={setUser} />
     </Route>
     <Route path ="/activities">
-        <Activities activities={activities} token = {token} setActivities={setActivities}/>
+        <Activities activities={activities} token={token} setActivities={setActivities}/>
     </Route>
     <Route path ="/routines">
         <Routines />

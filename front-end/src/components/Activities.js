@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState,useEffect } from "react";
 import { createActivities, fetchActivities } from "../api/api";
 // import { Link } from "react-router-dom";
 //import { getAllActivities } from "../../../db/activities";
@@ -6,6 +6,7 @@ import { createActivities, fetchActivities } from "../api/api";
 const Activities = ({ activities, token }) => {
   console.log(activities, "these are the activities");
   //   const [description, setDescription] = useState("");
+
   const [activity, setActivity] = useState([]);
   //   const [name, setName] = useState("");
   // const [token,setToken ] = useState(window.localStorage.getItem("token") || null)
@@ -19,17 +20,19 @@ const Activities = ({ activities, token }) => {
   //   }, [token]);
 
   useEffect(() => {
-    const gathering = async (activity, setActivity, token) => {
-      const data = await fetchActivities(activity, setActivity, token);
+   
+    const gathering = async (username) => {
+      const data = await fetchActivities(username, token);
       setActivity(data);
       console.log(data, " - this is data ");
+      console.log(token, "USEEFFECT TOKEN");
     };
-    gathering(activity, setActivity, token);
+    gathering( activity, setActivity, token);
   },[]);
 
   const handleCreateActivity = async (name, description) => {
     console.log(`this is name -${name} this is description - ${description}`);
-    const newActivity = await createActivities(token, name, description);
+    const newActivity = await createActivities(name, description, token);
     return newActivity;
   };
   const NewActivityForm = () => {
@@ -87,6 +90,7 @@ const Activities = ({ activities, token }) => {
     } */
           <form
             onSubmit={(event) => {
+                console.log(token, "please work");
               event.preventDefault();
               handleCreateActivity(name, description);
               setName("");
