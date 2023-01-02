@@ -46,6 +46,7 @@ const AccountForm = ({setToken, setUser}) => {
             type="text"
             value={username}
             placeholder="username"
+            minLength="8"
             required
             onChange={(event) => setUsername(event.target.value)}
           />

@@ -1,24 +1,27 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, } from "react";
+import {useHistory} from 'react-router-dom';
 import { createActivities, fetchActivities } from "../api/api";
 // import { Link } from "react-router-dom";
 //import { getAllActivities } from "../../../db/activities";
 
+
 const Activities = ({ activities, token }) => {
   console.log(activities, "these are the activities");
   //   const [description, setDescription] = useState("");
-
+  
   const [activity, setActivity] = useState([]);
   //   const [name, setName] = useState("");
   // const [token,setToken ] = useState(window.localStorage.getItem("token") || null)
-
+  
   // useEffect(() => {
-  //     if (token) {
-  //       window.localStorage.setItem('token', token);
-  //     } else {
-  //       window.localStorage.removeItem('token');
-  //     }
-  //   }, [token]);
-
+    //     if (token) {
+      //       window.localStorage.setItem('token', token);
+      //     } else {
+        //       window.localStorage.removeItem('token');
+        //     }
+        //   }, [token]);
+        const history = useHistory()
+        
   useEffect(() => {
     const gathering = async (username) => {
       const data = await fetchActivities(username, token);
@@ -48,6 +51,7 @@ const Activities = ({ activities, token }) => {
               handleCreateActivity(name, description);
               setName("");
               setDescription("");
+              history.push ("/activities")
             }}
           >
             <label>Routine Name</label>
