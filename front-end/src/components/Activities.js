@@ -1,38 +1,43 @@
 import React, { useState, useEffect } from "react";
 import { createActivities, fetchActivities } from "../api/api";
+import { useHistory } from "react-router-dom";
+
 // import { Link } from "react-router-dom";
 //import { getAllActivities } from "../../../db/activities";
 
-const Activities = ({ activities, token }) => {
+const Activities = ({ activities, description, setActivities, token  }) => {
+  const history = useHistory();
   console.log(activities, "these are the activities");
-  //   const [description, setDescription] = useState("");
+    // const [description, setDescription] = useState("");
+ 
+    // const [activity, setActivity] = useState([]);
+  // const handleClick = ()=>{
+  //   history.replace ('/<Activities>')
+  // }
 
-  const [activity, setActivity] = useState([]);
-  //   const [name, setName] = useState("");
-  // const [token,setToken ] = useState(window.localStorage.getItem("token") || null)
-
-  // useEffect(() => {
-  //     if (token) {
-  //       window.localStorage.setItem('token', token);
-  //     } else {
-  //       window.localStorage.removeItem('token');
-  //     }
-  //   }, [token]);
+  // useEffect(()=>{
+  // if(description){
+  //     history.push("/activities")
+  //   }
+  // },[description,history])
 
   useEffect(() => {
-    const gathering = async (username) => {
+    const gathering = async (username,) => {
       const data = await fetchActivities(username, token);
       setActivity(data);
       console.log(data, " - this is data ");
       console.log(token, "USEEFFECT TOKEN");
     };
-    gathering(activity, setActivity, token);
+    gathering(activities, setActivity, token);
   }, []);
+  console.log(activities, "ACTIVITIES ");
 
   const handleCreateActivity = async (name, description) => {
     console.log(`this is name -${name} this is description - ${description}`);
     const newActivity = await createActivities(name, description, token);
+    setActivity((prevActivities)=>[...prevActivities, description])
     return newActivity;
+   
   };
   const NewActivityForm = () => {
     const [name, setName] = useState("");
@@ -43,11 +48,23 @@ const Activities = ({ activities, token }) => {
         {token ? (
           <form
             onSubmit={(event) => {
-              console.log(token, "please work");
               event.preventDefault();
+              // const {description} = await createActivities(
+              //   name,
+              //   description,
+              //   token
+              // )
+              // if(description){
+              //   setActivities((prevActivities)=>[...prevActivities, description])
+              //   history.push("/activities")
+              
+              // }else{
+                //   console.error( "Error in onSubmit Activities");
+                // }
+                
+                  setName("");
+                  setDescription("");
               handleCreateActivity(name, description);
-              setName("");
-              setDescription("");
             }}
           >
             <label>Routine Name</label>
@@ -70,7 +87,6 @@ const Activities = ({ activities, token }) => {
             <button type="submit">Create Activity</button>
           </form>
         ) : null}
-        
       </>
     );
   };
