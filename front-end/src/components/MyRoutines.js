@@ -16,7 +16,7 @@ const MyRoutines = ({username, token, activities}) => {
             // console.log('data here: ', data)
         }
         gathering(username, token)
-    },[routines])
+    },[])
 
     const handleCreateNewRoutine = async (name, goal, visability) => {
         // console.log(`your private (${visability}) routine is ${name} until ${goal}`);
@@ -157,7 +157,8 @@ const MyRoutines = ({username, token, activities}) => {
         {routines.length < 1 
         ? (<p>You dont have any routines to display!</p>)
         : (
-            routines.map((eachRoutine) => {
+            Array.from(routines).map((eachRoutine) => {
+                console.log('this is routines', routines)
                 // console.log('each routine', eachRoutine)
                 return (
                     <div className="ui card centered" key={eachRoutine.id}>
