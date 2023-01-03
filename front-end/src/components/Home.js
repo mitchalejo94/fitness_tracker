@@ -25,7 +25,7 @@ const Home = ({ token }) => {
         <div className="container">
           <div className="ui fluid card">
             <Link className="card header" to="/activities">
-              Activites
+              Activities
             </Link>
           </div>
           <div className="ui fluid card">

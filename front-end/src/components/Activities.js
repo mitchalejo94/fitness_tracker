@@ -75,7 +75,9 @@ const Activities = ({ activities, token }) => {
                   />
                 </div>
 
-                <button type="submit">Create Activity</button>
+                <button className="ui button" type="submit">
+                  Create Activity
+                </button>
               </form>
             </div>
           </div>
