@@ -41,29 +41,34 @@ const MyRoutines = ({username, token, activities}) => {
         
         return (
             <>
-                <form onSubmit={(event) => {
+                <form 
+                className="ui input"
+                onSubmit={(event) => {
                 event.preventDefault();
                 handleEditRoutine(name, goal, visability, routine.id)
                 }}>
                     <label>Edit Routine Name</label>
                     <input
+                        className="ui input"
                         type="text"
                         value={name}
                         onChange={(event) => setName(event.target.value)}
                     />
                     <label>Edit Routine Goal</label>
                     <input
+                        className="ui input"
                         type="text"
                         value={goal}
                         onChange={(event) => setGoal(event.target.value)}
                     />
                     <label>Check this box to make your routine private: </label>
                     <input
+                        className="ui input"
                         type="checkbox"
                         value={visability}
                         onChange={() => setVisability(!visability)}/>
 
-                    <button type="submit">Submit Edited Routine</button>
+                    <button className="ui primary button" type="submit">Submit Edited Routine</button>
                 </form>
                 
             </>
@@ -97,8 +102,10 @@ const MyRoutines = ({username, token, activities}) => {
         // default to public
 
         return (
-            <>
-                <form onSubmit={(event) => {
+            <div className="ui container">
+                <form 
+                className="ui input"
+                onSubmit={(event) => {
                 event.preventDefault();
                 handleCreateNewRoutine(name, goal, visability)
                 setGoal("")
@@ -106,6 +113,7 @@ const MyRoutines = ({username, token, activities}) => {
                 }}>
                     <label>Routine Name</label>
                     <input
+                        className="ui input"
                         type="text"
                         value={name}
                         placeholder="name"
@@ -114,6 +122,7 @@ const MyRoutines = ({username, token, activities}) => {
                     />
                     <label>Routine Goal</label>
                     <input
+                        className="ui input"
                         type="text"
                         value={goal}
                         placeholder="goal"
@@ -122,14 +131,15 @@ const MyRoutines = ({username, token, activities}) => {
                     />
                     <label>Check this box to make your routine private: </label>
                     <input
+                        className="ui input"
                         type="checkbox"
                         value={visability}
                         onChange={() => setVisability(!visability)}/>
 
-                    <button type="submit">Create Routine</button>
+                    <button className="ui primary button" type="submit">Create Routine</button>
                 </form>
                 
-            </>
+            </div>
         )
     }
 
@@ -142,7 +152,7 @@ const MyRoutines = ({username, token, activities}) => {
         <>
         <h1 className="centered ui header">My Routines</h1>
         <NewRoutineForm />
-        <button onClick={() => setEdit(!edit)}>Edit Your Routines</button>
+        <button className="ui primary button" onClick={() => setEdit(!edit)}>Edit Your Routines</button>
         
         {routines.length < 1 
         ? (<p>You dont have any routines to display!</p>)
@@ -150,15 +160,15 @@ const MyRoutines = ({username, token, activities}) => {
             routines.map((eachRoutine) => {
                 // console.log('each routine', eachRoutine)
                 return (
-                    <div key={eachRoutine.id}>
-                        <h4>{eachRoutine.name}</h4>
-                        <p>{eachRoutine.goal}</p>
+                    <div className="ui card centered" key={eachRoutine.id}>
+                        <h4 className="ui header">{eachRoutine.name}</h4>
+                        <p className="ui tiny header">{eachRoutine.goal}</p>
                         {edit ? (<EditRoutineForm routine={eachRoutine} />) : null} 
                         <form onSubmit={(event) => {
                             event.preventDefault();
                         }}>
                             <label htmlFor="add-activities">Add activities</label>
-                            <select name="add-activities">
+                            <select role="listbox" className="ui fluid selection dropdown" name="add-activities">
                             <option disabled>Pick an Activity</option>
                             {activities.map((activity) => {
                                 return (
@@ -166,10 +176,10 @@ const MyRoutines = ({username, token, activities}) => {
                                 )
                             })}
                             </select>
-                            <button onClick={(event) => {handleAddActivity()}} type="submit">Add activity</button>
+                            <button className="ui primary button" onClick={() => {handleAddActivity()}} type="submit">Add activity</button>
                         </form> 
                         
-                        <button onClick={() => handleRoutineDelete(eachRoutine.id)}>Delete this routine</button>
+                        <button className="ui red basic button" onClick={() => handleRoutineDelete(eachRoutine.id)}>Delete this routine</button>
                     </div>
                 )
             })
