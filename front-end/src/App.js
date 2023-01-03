@@ -7,7 +7,7 @@ const App = () => {
 const [activities, setActivities] = useState ([])
 const [token, setToken ] = useState(window.localStorage.getItem("token") || null)
 // set user to
-const [user, setUser] = useState(false);
+const [user, setUser] = useState("");
 
 useEffect(() => {
     const getActivities = async () => {
@@ -76,7 +76,7 @@ const LogOut = ({setToken}) => {
         <Routines />
     </Route>  
     <Route path ="/myroutines">
-        <MyRoutines/>
+        <MyRoutines username={user} token={token} activities={activities}/>
     </Route>
 </Switch>
     </div>

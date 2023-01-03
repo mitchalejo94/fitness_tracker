@@ -12,7 +12,7 @@ const AccountForm = ({setToken, setUser}) => {
   const handleLogin = async(username, password) => {
     const returningUser = await loginUser(username, password)
     console.log("We are returning", returningUser);
-    setUser(returningUser.username)
+    setUser(returningUser.user.username)
     setToken(returningUser.token)
     setUsername("")
     setPassword("")

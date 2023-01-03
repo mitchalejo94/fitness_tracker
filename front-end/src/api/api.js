@@ -103,6 +103,102 @@
     }
  }
 
+
+ export const fetchRoutines = async(username, token) => {
+    try {
+        if (token) { 
+            const response = await fetch(`${URL}/users/${username}/routines`, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            const routines = response.json();
+            return routines;
+        } else {
+            const response = await fetch(`${URL}/users/${username}/routines`, {
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            });
+            const routines = response.json();
+            return routines;
+        }
+    } catch (error) {
+        console.log('there was an error fetching routines: ', error);
+        throw error;
+    }
+ };
+
+ // this function lets us make a new routine
+ export const postRoutine = async(name, goal, visability, token) => {
+    try {
+        // console.log('our info inside the post method: ', name, goal, visability, token)
+        const gatheringData = await fetch(`${URL}/routines`, {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({
+                    name: name,
+                    goal: goal,
+                    isPublic: visability
+                })
+        });
+        const newRoutine = await gatheringData.json();
+        console.log('our new routine: ', newRoutine)
+        return newRoutine;
+    } catch (error) {
+        console.log('there was an erro creating a new routine: ', error);
+        throw error;
+    }
+}
+
+// this function lets us PATCH a routine
+export const patchRoutine = async (name, goal, isPublic, token, routineId) => {
+    // PATCH /api/routines/:routineId
+    try {
+        const gatheringData = await fetch(`${URL}/routines/${routineId}`, {
+            method: "PATCH",
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({
+                name: name,
+                goal: goal,
+                isPublic: isPublic,
+            })
+        });
+
+        const editedRoutine = await gatheringData.json();
+        return editedRoutine;
+    } catch (error) {
+        console.log('there was an error patching a routine: ', error);
+        throw error;
+    }
+}
+
+// this api call will hard delete a routine from the database
+export const deleteRoutine = async (routineId, token) => {
+    try {
+        const gatheringData = await fetch(`${URL}/routines/${routineId}`, {
+            method: "DELETE",
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            }
+        });
+        const deletedRoutine = await gatheringData.json();
+        console.log('this routine was delete: ', deletedRoutine);
+        return deletedRoutine;
+    } catch (error) {
+        console.log('there was an error deleting a routine: ', error);
+        throw error;
+    }
+}
+
  export const createActivities = async (  name, description, token) => {
     try {
         const response = await fetch(`${URL}/activities`,
@@ -130,6 +226,7 @@
         console.error("There was an error creating a new activity", error)
     }
  }
+
 
 //  export const fetchActivities = async ()=>{
 //     try{

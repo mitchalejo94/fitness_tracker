@@ -3,14 +3,14 @@ import { fetchUser } from "../api/api";
 
 
 const Home = ({token}) => {
-    const getUserData = async (token) => {
-        const data = await fetchUser(token);
-        console.log('this is data in Home: ', data);
-        return data;
-    }
+    // const getUserData = async (token) => {
+    //     const data = await fetchUser(token);
+    //     console.log('this is data in Home: ', data);
+    //     return data;
+    // }
     // const data = await getUserData(token);
     // console.log('datadatadata: ', data)
-    getUserData();
+    // getUserData();
     return (
         <>
         <div className="ui container">
