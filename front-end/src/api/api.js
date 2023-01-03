@@ -106,24 +106,24 @@
 
  export const fetchRoutines = async(username, token) => {
     try {
-        if (token) { 
+        // if (token) { 
+        //     const response = await fetch(`${URL}/users/${username}/routines`, {
+        //         headers: {
+        //             'Content-Type': 'application/json',
+        //             'Authorization': `Bearer ${token}`
+        //         }
+        //     });
+        //     const routines = response.json();
+        //     return routines;
+        // } else {
             const response = await fetch(`${URL}/users/${username}/routines`, {
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
                 }
             });
             const routines = response.json();
             return routines;
-        } else {
-            const response = await fetch(`${URL}/users/${username}/routines`, {
-                headers: {
-                    'Content-Type': 'application/json',
-                }
-            });
-            const routines = response.json();
-            return routines;
-        }
+        
     } catch (error) {
         console.log('there was an error fetching routines: ', error);
         throw error;
@@ -227,7 +227,23 @@ export const deleteRoutine = async (routineId, token) => {
     }
  }
 
-
+// this function will let us attach an activity to a routine
+export const attachActivity = async (routineId, count, duration) => {
+    // POST /api/routines/:routineId/activities
+    try {
+        const response = await fetch(`${URL}/routines/${routineId}/activities`, {
+            method: "POST",
+            body: JSON.stringify({
+                count: count,
+                duration: duration,
+            })
+        });
+        console.log('this is our reponse in API: ', response);
+    } catch (error) {
+        console.log('there was an error attaching an activity : ', error);
+        throw error;
+    }
+}
 //  export const fetchActivities = async ()=>{
 //     try{
 //         const {success, error, activities } = await callAPI ('/activities',{

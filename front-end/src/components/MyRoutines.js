@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { fetchRoutines, postRoutine, patchRoutine, deleteRoutine } from "../api/api";
-
+import { fetchRoutines, postRoutine, patchRoutine, deleteRoutine, attachActivity } from "../api/api";
+import AddActivity from "./AddActivity";
 
 const MyRoutines = ({username, token, activities}) => {
     // console.log('username here: ', username);
@@ -142,11 +142,6 @@ const MyRoutines = ({username, token, activities}) => {
             </div>
         )
     }
-
-    const handleAddActivity = () => {
-        console.log('event? ')
-    }
-
     
     return (
         <>
@@ -164,20 +159,7 @@ const MyRoutines = ({username, token, activities}) => {
                         <h4 className="ui header">{eachRoutine.name}</h4>
                         <p className="ui tiny header">{eachRoutine.goal}</p>
                         {edit ? (<EditRoutineForm routine={eachRoutine} />) : null} 
-                        <form onSubmit={(event) => {
-                            event.preventDefault();
-                        }}>
-                            <label htmlFor="add-activities">Add activities</label>
-                            <select role="listbox" className="ui fluid selection dropdown" name="add-activities">
-                            <option disabled>Pick an Activity</option>
-                            {activities.map((activity) => {
-                                return (
-                                    <option key={activity.id} value={activity.id} >{activity.name}</option>
-                                )
-                            })}
-                            </select>
-                            <button className="ui primary button" onClick={() => {handleAddActivity()}} type="submit">Add activity</button>
-                        </form> 
+                        <AddActivity activities={activities} eachRoutine={eachRoutine}/>
                         
                         <button className="ui red basic button" onClick={() => handleRoutineDelete(eachRoutine.id)}>Delete this routine</button>
                     </div>
