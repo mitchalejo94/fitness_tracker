@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { createActivities, fetchActivities } from "../api/api";
+import {useHistory} from 'react-router-dom';
 
 
 const Activities = ({ activities, setActivities, token }) => {
+  const history = useHistory();
   console.log(activities, "these are the activities");
+  // const [errorMessage, setErrorMessage] = useState(null);
 
 
   useEffect(() => {
@@ -18,9 +21,19 @@ const Activities = ({ activities, setActivities, token }) => {
 
   const handleCreateActivity = async (name, description) => {
     console.log(`this is name -${name} this is description - ${description}`);
+    const oldActivity = await fetchActivities(name, description);
     const newActivity = await createActivities(name, description, token);
-    setActivities((previousActivities) => [...previousActivities, newActivity])
-    return newActivity;
+
+    if(newActivity != oldActivity) {
+      setActivities((previousActivities) => [...previousActivities, newActivity])
+      return newActivity;
+    } else {
+      window.alert("this exists already")
+      history.push('/activities')
+    }
+      
+    
+
   };
   const NewActivityForm = () => {
     const [name, setName] = useState("");
@@ -33,7 +46,7 @@ const Activities = ({ activities, setActivities, token }) => {
             <div className="ui card fluid">
               <form
                 onSubmit={(event) => {
-                  console.log(token, "please work");
+                  // console.log(token, "please work");
                   event.preventDefault();
                   handleCreateActivity(name, description);
                   setName("");
@@ -62,6 +75,8 @@ const Activities = ({ activities, setActivities, token }) => {
                     onChange={(event) => setDescription(event.target.value)}
                   />
                 </div>
+
+                {/* {(newActivity === oldActivity) ? <p className="ui negative message">{"This activity already exists"}</p> : null} */}
 
                 <button className="ui button" type="submit">
                   Create Activity
