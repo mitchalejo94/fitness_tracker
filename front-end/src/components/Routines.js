@@ -20,6 +20,7 @@ const Routines = ({ routines }) => {
                 <span className="goal">Goal: </span>
                 {individualRoutine.goal}
               </div>
+
               <div className="description">
                 <span className="goal">Activities included: </span>
               </div>
