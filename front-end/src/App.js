@@ -77,9 +77,11 @@ const App = () => {
           <Link className="item" to="/routines">
             Routines
           </Link>
-          <Link className="item" to="/myroutines">
-            My Routines
-          </Link>
+          {token ? (
+            <Link className="item" to="/myroutines">
+              My Routines
+            </Link>
+          ) : null}
         </div>
         <div className="right menu">
           {!token ? (

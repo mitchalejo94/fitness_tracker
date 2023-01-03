@@ -33,11 +33,13 @@ const Home = ({ token }) => {
               Routines
             </Link>
           </div>
-          <div className="ui fluid card">
-            <Link className="card header" to="/myroutines">
-              MyRoutines
-            </Link>
-          </div>
+          {token ? (
+            <div className="ui fluid card">
+              <Link className="card header" to="/myroutines">
+                MyRoutines
+              </Link>
+            </div>
+          ) : null}
         </div>
       </div>
     </>
