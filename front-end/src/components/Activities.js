@@ -1,37 +1,25 @@
 import React, { useState, useEffect } from "react";
 import { createActivities, fetchActivities } from "../api/api";
-// import { Link } from "react-router-dom";
-//import { getAllActivities } from "../../../db/activities";
 
-const Activities = ({ activities, token }) => {
+
+const Activities = ({ activities, setActivities, token }) => {
   console.log(activities, "these are the activities");
-  //   const [description, setDescription] = useState("");
 
-  const [activity, setActivity] = useState([]);
-  //   const [name, setName] = useState("");
-  // const [token,setToken ] = useState(window.localStorage.getItem("token") || null)
-
-  // useEffect(() => {
-  //     if (token) {
-  //       window.localStorage.setItem('token', token);
-  //     } else {
-  //       window.localStorage.removeItem('token');
-  //     }
-  //   }, [token]);
 
   useEffect(() => {
     const gathering = async (username) => {
       const data = await fetchActivities(username, token);
-      setActivity(data);
+      setActivities(data);
       console.log(data, " - this is data ");
       console.log(token, "USEEFFECT TOKEN");
     };
-    gathering(activity, setActivity, token);
+    gathering(setActivities, token);
   }, []);
 
   const handleCreateActivity = async (name, description) => {
     console.log(`this is name -${name} this is description - ${description}`);
     const newActivity = await createActivities(name, description, token);
+    setActivities((previousActivities) => [...previousActivities, newActivity])
     return newActivity;
   };
   const NewActivityForm = () => {
