@@ -8,8 +8,10 @@ body {
 
 }
 
-.ui.card.centered{
-    padding: 1rem;
+.ui.fluid.card{
+    padding: 2rem;
+    font-size: 18px;
+
 
 }
 
@@ -19,4 +21,13 @@ body {
 
 .card.header {
     color: #4183c4
+}
+
+#app {
+    padding: 1rem;
+}
+
+.container {
+    padding:30px;
+    justify-content: center;
 }
