@@ -100,6 +100,19 @@ export const fetchUser = async (token) => {
   }
 };
 
+export const fetchAllRoutines = async () => {
+  try {
+    const response = await fetch(`${URL}/routines`, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }).then((response) => response.json());
+    return response;
+  } catch (error) {
+    console.error("There was an error fetching the routines", error);
+  }
+};
+
 export const fetchRoutines = async (username, token) => {
   try {
     if (token) {

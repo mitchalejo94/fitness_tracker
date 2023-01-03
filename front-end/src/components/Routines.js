@@ -1,10 +1,10 @@
-import react from "react";
+import react, { useState } from "react";
+import { useHistory } from "react-router-dom";
 
-const Routines = (routines) => {
+const Routines = ({ routines }) => {
   return (
     <>
       <h1 className="centered ui header">Routines</h1>
-
       {routines.map((individualRoutine) => {
         return (
           <>

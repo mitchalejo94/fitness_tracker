@@ -7,7 +7,7 @@ import {
   MyRoutines,
 } from "./components";
 import { Route, Switch, Link } from "react-router-dom";
-import { fetchActivities, fetchRoutines } from "./api/api";
+import { fetchActivities, fetchAllRoutines } from "./api/api";
 
 const App = () => {
   const [activities, setActivities] = useState([]);
@@ -32,7 +32,7 @@ const App = () => {
 
   useEffect(() => {
     const getRoutines = async () => {
-      const routines = await fetchRoutines();
+      const routines = await fetchAllRoutines();
       // if (error) {
       //     console.error(error);
       // }
