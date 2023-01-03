@@ -32,11 +32,7 @@ const Routines = ({ routines }) => {
                   </>
                 );
               })}
-              <span>
-                {" "}
-                <button className="ui right floated button">Delete</button>{" "}
-                <button className="ui right floated button">Edit</button>
-              </span>
+              <span> </span>
             </div>
           </>
         );

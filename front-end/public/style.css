@@ -13,3 +13,10 @@ body {
 
 }
 
+.goal {
+    font-weight: bold;
+}
+
+.card.header {
+    color: #4183c4
+}
