@@ -41,36 +41,47 @@ const Activities = ({ activities, token }) => {
     return (
       <>
         {token ? (
-          <form
-            onSubmit={(event) => {
-              console.log(token, "please work");
-              event.preventDefault();
-              handleCreateActivity(name, description);
-              setName("");
-              setDescription("");
-            }}
-          >
-            <label>Routine Name</label>
-            <input
-              type="text"
-              value={name}
-              placeholder="name"
-              required
-              onChange={(event) => setName(event.target.value)}
-            />
-            <label>Routine Goal</label>
-            <input
-              type="text"
-              value={description}
-              placeholder="description"
-              required
-              onChange={(event) => setDescription(event.target.value)}
-            />
+          <div className="container">
+            <div className="ui card fluid">
+              <form
+                onSubmit={(event) => {
+                  console.log(token, "please work");
+                  event.preventDefault();
+                  handleCreateActivity(name, description);
+                  setName("");
+                  setDescription("");
+                }}
+              >
+                <div>
+                  <label className="card header">Activity Name</label>
+                  <br></br>
+                  <input
+                    type="text"
+                    value={name}
+                    placeholder="name"
+                    required
+                    onChange={(event) => setName(event.target.value)}
+                  />
+                </div>
+                <div>
+                  <label className="card header">Activity Description</label>
+                  <br></br>
+                  <input
+                    type="text"
+                    value={description}
+                    placeholder="description"
+                    required
+                    onChange={(event) => setDescription(event.target.value)}
+                  />
+                </div>
 
-            <button type="submit">Create Activity</button>
-          </form>
+                <button className="ui button" type="submit">
+                  Create Activity
+                </button>
+              </form>
+            </div>
+          </div>
         ) : null}
-        
       </>
     );
   };
@@ -83,11 +94,16 @@ const Activities = ({ activities, token }) => {
       {activities.map((individualActivity) => {
         return (
           <>
-            <div className="ui card centered">
-              <div className="header">
-                {individualActivity.name.toUpperCase()}
+            <div className="container">
+              <div className="ui fluid card">
+                <div className="card header">
+                  {individualActivity.name.toUpperCase()}
+                </div>
+                <div>
+                  <span className="goal">Description:</span>
+                  {individualActivity.description}
+                </div>
               </div>
-              <div className="meta">{individualActivity.description}</div>
             </div>
           </>
         );
