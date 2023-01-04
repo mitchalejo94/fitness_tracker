@@ -1,34 +1,4 @@
-// const { post } = require("../../../api/routines");
-
 const URL = "https://fitnesstrac-kr.herokuapp.com/api";
-
-//  const makeHeaders = (token)=>{
-//     const headers = {
-//         "Content-Type":"application/json"
-//     }
-//     if(token){
-//         headers["Authorization"] = `Bearer ${token}`
-//     }
-//     return headers
-//  }
-
-//  const callAPI = async (endpointPath, defaultOptions = {}) =>{
-//     const {token, method, body} = defaultOptions;
-
-//     const options = {
-//         headers: makeHeaders(token)
-//     }
-//     if(method){
-//         options.method = method
-//     }
-//     if(body){
-//         options.body = JSON.stringify(body)
-//     }
-//     const response = await fetch (`${URL}${endpointPath}`, options)
-//     const result = await response.json()
-
-//     return result
-//  }
 
 export const fetchActivities = async () => {
   try {
@@ -56,7 +26,6 @@ export const registerUser = async (username, password) => {
       }),
     });
     const result = await response.json();
-    console.log("result.....", result);
     return result;
   } catch (error) {
     console.error("There was an error registering the user", error);
@@ -84,7 +53,6 @@ export const loginUser = async (username, password) => {
 };
 
 export const fetchUser = async (token) => {
-  // console.log('token in fetchuser: ', token)
   try {
     const response = await fetch(`${URL}/users/me`, {
       headers: {
@@ -92,7 +60,6 @@ export const fetchUser = async (token) => {
         Authorization: `Bearer ${token}`,
       },
     }).then((response) => response.json());
-    // console.log('this is fetch response: ', response);
     return response;
   } catch (error) {
     console.log("there was an error fetching the user: ", error);
@@ -142,7 +109,6 @@ export const fetchRoutines = async (username, token) => {
 // this function lets us make a new routine
 export const postRoutine = async (name, goal, visability, token) => {
   try {
-    // console.log('our info inside the post method: ', name, goal, visability, token)
     const gatheringData = await fetch(`${URL}/routines`, {
       method: "POST",
       headers: {
@@ -156,7 +122,6 @@ export const postRoutine = async (name, goal, visability, token) => {
       }),
     });
     const newRoutine = await gatheringData.json();
-    console.log("our new routine: ", newRoutine);
     return newRoutine;
   } catch (error) {
     console.log("there was an erro creating a new routine: ", error);
@@ -200,7 +165,6 @@ export const deleteRoutine = async (routineId, token) => {
       },
     });
     const deletedRoutine = await gatheringData.json();
-    console.log("this routine was delete: ", deletedRoutine);
     return deletedRoutine;
   } catch (error) {
     console.log("there was an error deleting a routine: ", error);
@@ -223,40 +187,10 @@ export const createActivities = async (name, description, token) => {
       }),
     });
     const result = await response.json();
-    console.log(token, "api token");
-    console.log(name, "API NAME");
-    console.log(description, "API DESCRIPTION");
-    console.log("createActivities api call result:", result);
     return result;
   } catch (error) {
     console.error("There was an error creating a new activity", error);
   }
 };
 
-//  export const fetchActivities = async ()=>{
-//     try{
-//         const {success, error, activities } = await callAPI ('/activities',{
-//             token:token
-//         })
-//         if(success){
-//             return{
-//                 error:null,
-//                 posts: activities
-//             }
-//         }else{
-//             return{
-//                 error:error.message,
-//                 posts:[]
-//             }
-//         }
-//     }catch(error){
-//         console.error("Error fetching activities", error);
-
-//         return{
-//             error: 'Failed to load activities',
-//             posts: []
-
-//         }
-//     }
-//  }
 export default loginUser;

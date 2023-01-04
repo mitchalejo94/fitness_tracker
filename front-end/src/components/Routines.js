@@ -1,5 +1,4 @@
-import react, { useState } from "react";
-import { useHistory } from "react-router-dom";
+import React from "react";
 
 const Routines = ({ routines }) => {
   return (
@@ -13,7 +12,7 @@ const Routines = ({ routines }) => {
                 <div className="card header">
                   {individualRoutine.name.toUpperCase()}
                 </div>
-                <div classname="meta">
+                <div className="meta">
                   <span className="goal">By: </span>
                   {individualRoutine.creatorName}
                 </div>

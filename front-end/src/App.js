@@ -21,23 +21,16 @@ const App = () => {
   useEffect(() => {
     const getActivities = async () => {
       const activities = await fetchActivities();
-      // if (error) {
-      //     console.error(error);
-      // }
+
       setActivities(activities);
-      console.log("HEREEEEE is activities", activities);
-    };
+      };
     getActivities();
   }, []);
 
   useEffect(() => {
     const getRoutines = async () => {
       const routines = await fetchAllRoutines();
-      // if (error) {
-      //     console.error(error);
-      // }
       setRoutines(routines);
-      console.log("here is routines", routines);
     };
     getRoutines();
   }, []);

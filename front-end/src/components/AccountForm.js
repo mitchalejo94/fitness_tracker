@@ -10,7 +10,6 @@ const AccountForm = ({ setToken, setUser }) => {
 
   const handleLogin = async (username, password) => {
     const returningUser = await loginUser(username, password);
-    console.log("We are returning", returningUser);
     setUser(returningUser.user.username);
     setToken(returningUser.token);
     setUsername("");
@@ -20,7 +19,6 @@ const AccountForm = ({ setToken, setUser }) => {
   };
   const handleRegister = async (username, password) => {
     const newUser = await registerUser(username, password);
-    console.log("We are new user", newUser);
     if (newUser) {
       setUser(newUser.username);
       setToken(newUser.token);
