@@ -3,8 +3,6 @@ import { fetchRoutines, postRoutine, patchRoutine, deleteRoutine } from "../api/
 
 
 const MyRoutines = ({username, token, activities}) => {
-    // console.log('username here: ', username);
-    // console.log('token here? :', token)
 
     const [routines, setRoutines] = useState([]);
     const [edit, setEdit] = useState(false);
@@ -13,23 +11,20 @@ const MyRoutines = ({username, token, activities}) => {
         const gathering = async(username, token) => {
             const data = await fetchRoutines(username, token);
             setRoutines(data);
-            // console.log('data here: ', data)
         }
         gathering(username, token)
-    },[routines])
+    },[])
 
     const handleCreateNewRoutine = async (name, goal, visability) => {
-        // console.log(`your private (${visability}) routine is ${name} until ${goal}`);
         const newRoutine = await postRoutine(name, goal, visability, token);
-        setRoutines((previousRoutines) => [...previousRoutines, newRoutine]);
-        // setAddContact((prevContact) => [...prevContact, inputValue]);
+
+            setRoutines((previousRoutines) => [...previousRoutines, newRoutine]);
+        
         return newRoutine;
     }
 
     const handleRoutineDelete = async (routineId) => {
-        // console.log(`are you sure you want to delete ${routineId}`);
         const youSureYouWantToDeleteThis = await deleteRoutine(routineId, token)
-        // console.log('youSureYouWantToDeleteThis', youSureYouWantToDeleteThis);
         return youSureYouWantToDeleteThis;
     }
 
@@ -37,7 +32,6 @@ const MyRoutines = ({username, token, activities}) => {
         const [name, setName] = useState(routine.name);
         const [goal, setGoal] = useState(routine.goal);
         const [visability, setVisability] = useState(routine.visability);
-        // console.log('did we get teh edit routine? ', routine)
         
         return (
             <>
@@ -76,21 +70,10 @@ const MyRoutines = ({username, token, activities}) => {
     }
 
     const handleEditRoutine = async (name, goal, visability, routineId) => {
-        // routine comes in as an object
-        // creatorId, creatorName, goal, isPublic, name
-
-        // (name, goal, isPublic, token, routineId)
         const updatedRoutine = await patchRoutine(name, goal, visability, token, routineId);
         // console.log('updated routine on page? ', updatedRoutine)
         setEdit(false)
 
-        // <button onClick={() => {
-            // setArtists(
-            //     artists.filter(a =>
-            //       a.id !== artist.id
-            //     )
-            //   );
-            // }}>
         const updatingState = routines.filter((routine => routine.id !== updatedRoutine.id));
         setRoutines([...updatingState, updatedRoutine])
     }
@@ -102,7 +85,8 @@ const MyRoutines = ({username, token, activities}) => {
         // default to public
 
         return (
-            <div className="ui container">
+            <div className="container">
+            <div className="ui card fluid">
                 <form 
                 className="ui input"
                 onSubmit={(event) => {
@@ -140,11 +124,8 @@ const MyRoutines = ({username, token, activities}) => {
                 </form>
                 
             </div>
+            </div>
         )
-    }
-
-    const handleAddActivity = () => {
-        console.log('event? ')
     }
 
     
@@ -154,13 +135,14 @@ const MyRoutines = ({username, token, activities}) => {
         <NewRoutineForm />
         <button className="ui primary button" onClick={() => setEdit(!edit)}>Edit Your Routines</button>
         
-        {routines.length < 1 
+        {!routines 
         ? (<p>You dont have any routines to display!</p>)
         : (
-            routines.map((eachRoutine) => {
-                // console.log('each routine', eachRoutine)
+            Array.from(routines).map((eachRoutine) => {
                 return (
-                    <div className="ui card centered" key={eachRoutine.id}>
+                    <div className="container">
+                    <div className="ui card fluid">
+                    <div key={eachRoutine.id}>
                         <h4 className="ui header">{eachRoutine.name}</h4>
                         <p className="ui tiny header">{eachRoutine.goal}</p>
                         {edit ? (<EditRoutineForm routine={eachRoutine} />) : null} 
@@ -176,10 +158,12 @@ const MyRoutines = ({username, token, activities}) => {
                                 )
                             })}
                             </select>
-                            <button className="ui primary button" onClick={() => {handleAddActivity()}} type="submit">Add activity</button>
+                            <button className="ui primary button" type="submit">Add activity</button>
                         </form> 
                         
                         <button className="ui red basic button" onClick={() => handleRoutineDelete(eachRoutine.id)}>Delete this routine</button>
+                    </div>
+                    </div>
                     </div>
                 )
             })

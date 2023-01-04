@@ -1,17 +1,7 @@
 import React from "react";
-import { Route, Switch, Link } from "react-router-dom";
-import { Activities, Routines, MyRoutines } from "/";
-import { fetchUser } from "../api/api";
+import { Link } from "react-router-dom";
 
 const Home = ({ token }) => {
-  // const getUserData = async (token) => {
-  //     const data = await fetchUser(token);
-  //     console.log('this is data in Home: ', data);
-  //     return data;
-  // }
-  // const data = await getUserData(token);
-  // console.log('datadatadata: ', data)
-  // getUserData();
   return (
     <>
       <div className="ui container">

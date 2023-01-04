@@ -3,21 +3,17 @@ import { createActivities, fetchActivities } from "../api/api";
 
 
 const Activities = ({ activities, setActivities, token }) => {
-  console.log(activities, "these are the activities");
 
 
   useEffect(() => {
     const gathering = async (username) => {
       const data = await fetchActivities(username, token);
       setActivities(data);
-      console.log(data, " - this is data ");
-      console.log(token, "USEEFFECT TOKEN");
     };
     gathering(setActivities, token);
   }, []);
 
   const handleCreateActivity = async (name, description) => {
-    console.log(`this is name -${name} this is description - ${description}`);
     const newActivity = await createActivities(name, description, token);
     setActivities((previousActivities) => [...previousActivities, newActivity])
     return newActivity;
@@ -33,7 +29,6 @@ const Activities = ({ activities, setActivities, token }) => {
             <div className="ui card fluid">
               <form
                 onSubmit={(event) => {
-                  console.log(token, "please work");
                   event.preventDefault();
                   handleCreateActivity(name, description);
                   setName("");
